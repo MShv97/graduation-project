@@ -3,16 +3,20 @@ import { Category } from "./Category";
 
 
 @Entity()
-export class Menu{
-    @PrimaryGeneratedColumn({unsigned: true})
-    id: Number;
-    @Column({type: "varchar" ,length: 100, unique: true})
-    name: String;
-    @Column({type: "text"})
-    description: String;
-    @Column({type: "text"})
-    thumpnail: String;
+export class Menu {
 
-    @OneToMany(()=>Category ,category =>category.menu)
-    category: Category[];
+    @PrimaryGeneratedColumn({ unsigned: true })
+    id: number
+
+    @Column({ length: 100, unique: true })
+    name: string
+
+    @Column({ type: "text" })
+    description: string
+
+    @Column({ type: "text" })
+    thumpnail: string
+
+    @OneToMany(() => Category, category => category.menu)
+    categories: Category[];
 }

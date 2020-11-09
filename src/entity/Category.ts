@@ -6,18 +6,21 @@ import { Menu } from "./Menu";
 @Entity()
 export class Category {
 
-    @PrimaryGeneratedColumn({unsigned: true})
-    id: Number;
-    @Column({type: "varchar" ,length: 100, unique: true})
-    name: String;
-    @Column({type: "text"})
-    description: String;
-    @Column({type: "text"})
-    thumpnail: String;
+    @PrimaryGeneratedColumn({ unsigned: true })
+    id: number
 
-    @ManyToOne(()=> Menu , menu=>menu.category)
-    menu: Menu;
+    @Column({ length: 100, unique: true })
+    name: string
 
-    @OneToMany(()=> Dish, dish=> dish.category)
-    dish:Dish[];
+    @Column({ type: "text" })
+    description: string
+
+    @Column({ type: "text" })
+    thumpnail: string
+
+    @ManyToOne(type => Menu, menu => menu.categories)
+    menu: Menu
+
+    @OneToMany(type => Dish, dish => dish.category)
+    dishs: Dish[]
 }

@@ -3,11 +3,13 @@ import { Dish } from "./Dish";
 
 @Entity()
 export class Image {
-    @PrimaryGeneratedColumn({unsigned: true})
-    id: Number;
-    @Column({type: "text"})
-    url: String
 
-    @ManyToOne(()=> Dish, dish=> dish.image)
+    @PrimaryGeneratedColumn({ unsigned: true })
+    id: number
+
+    @Column({ type: "text" })
+    url: string
+
+    @ManyToOne(() => Dish, dish => dish.images)
     dish: Dish;
 }
