@@ -22,9 +22,6 @@ export class User {
     @Column({ type: "text" })
     password: string
 
-    @Column({ length: 40 })
-    role: string
-
     @Column({ type: "date" })
     birthDate: Date
 
