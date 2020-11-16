@@ -1,7 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, PrimaryGeneratedColumn } from "typeorm";
 
-
-@Entity()
 export class User {
 
     @PrimaryGeneratedColumn({ unsigned: true })
@@ -23,9 +21,9 @@ export class User {
     password: string
 
     @Column({ type: "date" })
-    birthDate: Date
+    birthdate: Date
 
     @Column({ type: "text" })
-    avatar: String
+    avatar: string
 
 }

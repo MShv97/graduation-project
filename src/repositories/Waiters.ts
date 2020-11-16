@@ -1,5 +1,5 @@
 import { EntityRepository, getCustomRepository, Repository } from "typeorm";
-import { Waiter } from "../entity/UserType/Waiter";
+import { Waiter } from "../entity/Waiter";
 
 @EntityRepository(Waiter)
 class WaiterRepository extends Repository<Waiter> {

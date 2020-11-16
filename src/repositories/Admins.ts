@@ -1,5 +1,5 @@
 import { EntityRepository, getCustomRepository, Repository } from "typeorm";
-import { Admin } from "../entity/UserType/Admin";
+import { Admin } from "../entity/Admin";
 
 @EntityRepository(Admin)
 class AdminRepository extends Repository<Admin> {
