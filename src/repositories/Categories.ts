@@ -1,9 +1,6 @@
 import { EntityRepository, getCustomRepository, Repository } from "typeorm";
-import { Category } from "../entity/Category";
+import { Category } from "../entities/Category";
 
 @EntityRepository(Category)
-class CategoryRepository extends Repository<Category> {
-
-
-}
-export default getCustomRepository(CategoryRepository)
+class CategoryRepository extends Repository<Category> {}
+export default getCustomRepository(CategoryRepository);

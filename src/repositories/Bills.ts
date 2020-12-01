@@ -1,9 +1,6 @@
 import { EntityRepository, getCustomRepository, Repository } from "typeorm";
-import { Bill } from "../entity/Bill";
+import { Bill } from "../entities/Bill";
 
 @EntityRepository(Bill)
-class BillRepository extends Repository<Bill> {
-
-
-}
-export default getCustomRepository(BillRepository)
+class BillRepository extends Repository<Bill> {}
+export default getCustomRepository(BillRepository);
