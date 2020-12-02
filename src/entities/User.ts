@@ -1,4 +1,4 @@
-import { Column, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 export enum UserType {
   ADMIN = "admin",
@@ -6,16 +6,16 @@ export enum UserType {
   WAITER = "waiter",
   CHIEF = "chief",
 }
-
+@Entity()
 export class User {
   @PrimaryGeneratedColumn({ unsigned: true })
   id: Number;
 
   @Column({ length: 40 })
-  firstName: string;
+  first_name: string;
 
   @Column({ length: 40 })
-  lastName: string;
+  last_name: string;
 
   @Column({ unique: true })
   email: string;
@@ -26,7 +26,7 @@ export class User {
   @Column({ type: "date" })
   birthdate: Date;
 
-  @Column({ type: "text" })
+  @Column({ type: "text", nullable: true })
   avatar: string;
 
   @Column({ type: "enum", enum: UserType })
