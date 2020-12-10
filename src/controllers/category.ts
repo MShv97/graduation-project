@@ -1,13 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 import { ResponseSender } from "../helpers";
-import category from "../routers/reqValidation/category";
-import CategoryService from "../services/category";
+import CategoryServices from "../services/category";
 
 //MM-7
 async function create(req: Request, res: Response, next: NextFunction) {
   try {
     const body = req.body;
-    const results = await CategoryService.create(body);
+    const results = await CategoryServices.create(body);
     ResponseSender({ res: res, status: 200, response: results });
   } catch (err) {
     next(err);
@@ -21,7 +20,7 @@ async function read(req: Request, res: Response, next: NextFunction) {
     const size = Number(req.query.size) || 8;
     const q = req.query.q ? String(req.query.q) : "";
 
-    const results = await CategoryService.read(menuId, page, size, q);
+    const results = await CategoryServices.read(menuId, page, size, q);
     ResponseSender({ res: res, status: 200, response: results });
   } catch (err) {
     next(err);
@@ -31,7 +30,7 @@ async function read(req: Request, res: Response, next: NextFunction) {
 async function update(req: Request, res: Response, next: NextFunction) {
   try {
     const body = req.body;
-    const results = await CategoryService.update(body);
+    const results = await CategoryServices.update(body);
     ResponseSender({ res: res, status: 200, response: results });
   } catch (err) {
     next(err);
@@ -41,7 +40,7 @@ async function update(req: Request, res: Response, next: NextFunction) {
 async function del(req: Request, res: Response, next: NextFunction) {
   try {
     const categoryId = Number(req.params.category_id);
-    const results = await CategoryService.del(categoryId);
+    const results = await CategoryServices.del(categoryId);
     ResponseSender({ res: res, status: 200, response: results });
   } catch (err) {
     next(err);
