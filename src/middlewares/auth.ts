@@ -4,7 +4,8 @@ import { ResponseSender } from "../helpers";
 
 export class userReq {
   userId: any;
-  type: any;
+  role?: any;
+  restaurantId?: any;
 }
 // add currUser to the request interface
 declare module "express-serve-static-core" {
@@ -17,14 +18,14 @@ declare module "express-serve-static-core" {
 }
 export default async (req: Request, res: Response, next: NextFunction) => {
   // get the authorization header from request
-  const authorizationHeader: string = <string>req.headers["Authorization"];
+  const authorizationHeader: string = <string>(req.headers["Authorization"] || req.headers["authorization"]);
   try {
     const token = authorizationHeader.split(" ")[1];
 
     const payload = <any>verify(token, process.env.JWT_ACCESS_SECRET);
 
-    const { userId, type } = payload;
-    req.currUser = { userId, type };
+    const { userId, role, restaurantId } = payload;
+    req.currUser = { userId, role, restaurantId };
   } catch (err) {
     if (err.name == "TokenExpiredError") {
       ResponseSender({ res: res, status: 401, response: "Token has been expired" });

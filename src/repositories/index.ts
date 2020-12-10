@@ -7,5 +7,23 @@ import ClientRepo from "./Clients";
 import ImageRepo from "./Images";
 import OrderRepo from "./Orders";
 import TableRepo from "./Tables";
+import RestaurantRepo from "./Restaurants";
+import SubscriptionRepo from "./Subscription";
+import RestaurantSubscriptionRepo from "./RestaurantSubscription";
+import PaymentMethodsRepo from "./PaymentMethods";
 
-export { UserRepo, DishRepo, CategoryRepo, BillRepo, MenuRepo, ClientRepo, ImageRepo, OrderRepo, TableRepo };
+export {
+  UserRepo,
+  DishRepo,
+  CategoryRepo,
+  BillRepo,
+  MenuRepo,
+  ClientRepo,
+  ImageRepo,
+  OrderRepo,
+  TableRepo,
+  RestaurantRepo,
+  SubscriptionRepo,
+  RestaurantSubscriptionRepo,
+  PaymentMethodsRepo,
+};

@@ -7,13 +7,13 @@ export class Menu {
   @PrimaryGeneratedColumn({ unsigned: true })
   id: number;
 
-  @Column({ length: 100, unique: true })
+  @Column({ length: 100 })
   name: string;
 
   @Column({ type: "text" })
   description: string;
 
-  @Column({ type: "text" })
+  @Column({ type: "text", nullable: true })
   thumpnail: string;
 
   @OneToMany(type => Category, category => category.menu)

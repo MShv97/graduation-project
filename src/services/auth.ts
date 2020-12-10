@@ -8,12 +8,12 @@ import { UserRepo } from "../repositories";
 const login = async (body: any) => {
   try {
     const { email, password } = body;
-    const user = await UserRepo.findOneOrFail({ where: { email: email } });
+    const user = await UserRepo.findOneOrFail({ where: { email: email }, relations: ["restaurant"] });
     // verify password
     if (!(await compare(password, user.password)))
       throw new CustomError({ status: 401, message: "Password is invalid." });
     // generate JWT tokens
-    const payload = { userId: user.id, type: user.role };
+    const payload = { userId: user.id, role: user.role, restaurantId: user.restaurant.id };
     const { access_token, refresh_token } = JWTGenerator(payload);
 
     return {
@@ -36,10 +36,13 @@ const signup = async (body: any) => {
     user.password = await hash(body.password, Number(process.env.BCRYPT_ROUNDS));
     user.role = body.role;
     user.birthdate = body.birthdate;
+    user.restaurant = body.restaurant_id;
     await UserRepo.save(user);
-    return "Signed up Successfully";
+    return "OK";
   } catch (err) {
     if (err.code == "ER_DUP_ENTRY") throw new CustomError({ status: 409, message: "Email already exist." });
+    if (err.code == "ER_NO_REFERENCED_ROW_2")
+      throw new CustomError({ status: 404, message: "Restaurant was not found." });
     throw err;
   }
 };

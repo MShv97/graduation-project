@@ -5,7 +5,7 @@ export default function checkRoleMiddleware(roles: string[]) {
     // get the user  req.body
     const { currUser } = req;
     // check if has any of the given roles
-    if (roles.indexOf(currUser.type) > -1) next();
+    if (roles.indexOf(currUser.role) > -1) next();
     else
       res.status(401).send({
         message: "You are not allowed to do this request.",
