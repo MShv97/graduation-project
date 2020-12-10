@@ -47,9 +47,9 @@ async function update(body: any) {
   }
 }
 // MM-7
-async function del(menuId: number) {
+async function del(categoryId: number) {
   try {
-    await CategoryRepo.delete(menuId);
+    await CategoryRepo.delete(categoryId);
     return "OK";
   } catch (err) {
     throw err;

@@ -7,7 +7,7 @@ const router: Router = Router();
 
 //MM-8
 router.post("/", authMiddleware, checkRoleMiddleware(["admin"]), Validator(DishValidator.create), DishController.create);
-router.get("/", authMiddleware, checkRoleMiddleware(["admin"]), Validator(DishValidator.read), DishController.read);
+router.get("/", Validator(DishValidator.read), DishController.read);
 router.patch("/", authMiddleware, checkRoleMiddleware(["admin"]), Validator(DishValidator.update), DishController.update);
 router.delete("/:dish_id", authMiddleware, checkRoleMiddleware(["admin"]), Validator(DishValidator.del), DishController.del);
 
