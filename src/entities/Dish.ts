@@ -3,6 +3,11 @@ import { Category } from "./Category";
 import { Image } from "./Image";
 import { Order } from "./Order";
 
+export enum DishStatus {
+  ACTIVE = "active",
+  DISABLED = "disabled",
+}
+
 @Entity()
 export class Dish {
   @PrimaryGeneratedColumn({ unsigned: true })
@@ -17,21 +22,21 @@ export class Dish {
   @Column({ length: 40, unique: true })
   code: string;
 
-  @Column({ type: "decimal", precision: 6, scale: 3 })
+  @Column({ type: "float" })
   price: number;
 
   @Column({ type: "decimal", precision: 3, scale: 3 })
   discount: number;
 
-  @Column({ length: 40 })
+  @Column({ type: "enum", enum: DishStatus, default: DishStatus.ACTIVE })
   status: string;
 
-  @ManyToOne(() => Category, category => category.dishs)
+  @ManyToOne(type => Category, category => category.dishs)
   category: Category;
 
-  @OneToMany(() => Image, image => image.dish)
+  @OneToMany(type => Image, image => image.dish)
   images: Image[];
 
-  @OneToMany(() => Order, order => order.dish)
+  @OneToMany(type => Order, order => order.dish)
   orders: Order[];
 }

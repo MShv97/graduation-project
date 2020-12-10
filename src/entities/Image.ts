@@ -9,6 +9,6 @@ export class Image {
   @Column({ type: "text" })
   url: string;
 
-  @ManyToOne(() => Dish, dish => dish.images)
+  @ManyToOne(type => Dish, dish => dish.images)
   dish: Dish;
 }

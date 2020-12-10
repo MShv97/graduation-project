@@ -1,6 +1,7 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Restaurant } from "./Restaurant";
 
-export enum UserType {
+export enum UserRole {
   ADMIN = "admin",
   ACCOUNTANT = "accountant",
   WAITER = "waiter",
@@ -29,6 +30,9 @@ export class User {
   @Column({ type: "text", nullable: true })
   avatar: string;
 
-  @Column({ type: "enum", enum: UserType })
-  type: UserType;
+  @Column({ type: "enum", enum: UserRole })
+  role: UserRole;
+
+  @ManyToOne(type => Restaurant, restaurant => restaurant.users)
+  restaurant: Restaurant;
 }

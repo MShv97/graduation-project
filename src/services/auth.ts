@@ -1,6 +1,7 @@
 import { compare, hash } from "bcrypt";
 import { sign, verify } from "jsonwebtoken";
 import { CustomError } from "../helpers";
+import JWTGenerator from "../helpers/JWTGenerator";
 import { UserRepo } from "../repositories";
 
 //MM-3
@@ -12,11 +13,8 @@ const login = async (body: any) => {
     if (!(await compare(password, user.password)))
       throw new CustomError({ status: 401, message: "Password is invalid." });
     // generate JWT tokens
-    const payload = { userId: user.id, type: user.type };
-    const access_token = sign(payload, process.env.JWT_ACCESS_SECRET, { expiresIn: process.env.JWT_ACCESS_expiresIn });
-    const refresh_token = sign(payload, process.env.JWT_REFRESH_SECRET, {
-      expiresIn: process.env.JWT_REFRESH_expiresIn,
-    });
+    const payload = { userId: user.id, type: user.role };
+    const { access_token, refresh_token } = JWTGenerator(payload);
 
     return {
       access_token,
@@ -36,7 +34,7 @@ const signup = async (body: any) => {
     user.last_name = body.last_name;
     user.email = body.email;
     user.password = await hash(body.password, Number(process.env.BCRYPT_ROUNDS));
-    user.type = body.type;
+    user.role = body.role;
     user.birthdate = body.birthdate;
     await UserRepo.save(user);
     return "Signed up Successfully";
@@ -52,10 +50,7 @@ const refreshToken = async (body: any) => {
     const rToken = body.refresh_token;
     const { userId, type } = <any>verify(rToken, process.env.JWT_REFRESH_SECRET);
     const payload = { userId, type };
-    const access_token = sign(payload, process.env.JWT_ACCESS_SECRET, { expiresIn: process.env.JWT_ACCESS_expiresIn });
-    const refresh_token = sign(payload, process.env.JWT_REFRESH_SECRET, {
-      expiresIn: process.env.JWT_REFRESH_expiresIn,
-    });
+    const { access_token, refresh_token } = JWTGenerator(payload);
     return {
       access_token,
       refresh_token,

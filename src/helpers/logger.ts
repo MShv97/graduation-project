@@ -1,5 +1,5 @@
-import * as winston from "winston";
-import * as chalk from "chalk";
+import winston from "winston";
+import chalk from "chalk";
 
 const levels = {
   Error: 0,

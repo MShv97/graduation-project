@@ -2,6 +2,11 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Client } from "./Client";
 import { Dish } from "./Dish";
 
+export enum OrderStatus {
+  PENDING = "pending",
+  READY = "ready",
+}
+
 @Entity()
 export class Order {
   @PrimaryGeneratedColumn({ unsigned: true })
@@ -13,12 +18,12 @@ export class Order {
   @Column({ type: "text" })
   note: String;
 
-  @Column()
-  status: string;
+  @Column({ type: "enum", enum: OrderStatus, default: OrderStatus.PENDING })
+  status: OrderStatus;
 
-  @ManyToOne(() => Dish, dish => dish.orders)
+  @ManyToOne(type => Dish, dish => dish.orders)
   dish: Dish;
 
-  @ManyToOne(() => Client, client => client.orders)
+  @ManyToOne(type => Client, client => client.orders)
   client: Client;
 }

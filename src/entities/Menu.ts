@@ -1,5 +1,6 @@
 import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Category } from "./Category";
+import { Restaurant } from "./Restaurant";
 
 @Entity()
 export class Menu {
@@ -15,6 +16,9 @@ export class Menu {
   @Column({ type: "text" })
   thumpnail: string;
 
-  @OneToMany(() => Category, category => category.menu)
+  @OneToMany(type => Category, category => category.menu)
   categories: Category[];
+
+  @ManyToOne(type => Restaurant, restaurant => restaurant.menus)
+  restaurant: Restaurant;
 }

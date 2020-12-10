@@ -1,5 +1,12 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Client } from "./Client";
+import { Restaurant } from "./Restaurant";
+
+export enum TableStatus {
+  BUSY = "busy",
+  ACTIVE = "active",
+  OFS = "out of service",
+}
 
 @Entity()
 export class Table {
@@ -12,6 +19,12 @@ export class Table {
   @Column({ type: "text" })
   QR: string;
 
+  @Column({ type: "enum", enum: TableStatus, default: TableStatus.ACTIVE })
+  status: TableStatus;
+
   @OneToMany(() => Client, client => client.table)
   clients: Client[];
+
+  @ManyToOne(type => Restaurant, restaurant => restaurant.tables)
+  restaurant: Restaurant;
 }

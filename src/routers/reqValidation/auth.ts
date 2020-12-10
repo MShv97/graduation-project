@@ -1,5 +1,5 @@
 import Joi = require("joi");
-import { UserType } from "../../entities/User";
+import { UserRole } from "../../entities/User";
 
 function enumValues(enm: any) {
   return Object.keys(enm).map(key => enm[key]);
@@ -19,8 +19,8 @@ const signupBody = Joi.object({
   last_name: Joi.string().required(),
   email: Joi.string().email().required(),
   password: Joi.string().min(8).required(),
-  type: Joi.string()
-    .valid(...enumValues(UserType))
+  role: Joi.string()
+    .valid(...enumValues(UserRole))
     .required(),
   birthdate: Joi.date().required(),
 });

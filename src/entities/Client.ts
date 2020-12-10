@@ -17,12 +17,12 @@ export class Client {
   @Column({ type: "date" })
   order_date: Date;
 
-  @OneToMany(() => Order, order => order.client)
+  @OneToMany(type => Order, order => order.client)
   orders: Order[];
 
-  @ManyToOne(() => Table, table => table.clients)
+  @ManyToOne(type => Table, table => table.clients)
   table: Table;
 
-  @OneToOne(() => Bill, bill => bill.client)
+  @OneToOne(type => Bill, bill => bill.client)
   bill: Bill;
 }
