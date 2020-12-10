@@ -1,5 +1,5 @@
 import { Router } from "express";
-import DishController from "../controllers/category";
+import DishController from "../controllers/dish";
 import { authMiddleware, checkRoleMiddleware } from "../middlewares";
 import { DishValidator, Validator } from "./reqValidation";
 

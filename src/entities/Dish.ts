@@ -25,7 +25,7 @@ export class Dish {
   @Column({ type: "float" })
   price: number;
 
-  @Column({ type: "decimal", precision: 3, scale: 3 })
+  @Column({ type: "float", default: 0 })
   discount: number;
 
   @Column({ type: "enum", enum: DishStatus, default: DishStatus.ACTIVE })

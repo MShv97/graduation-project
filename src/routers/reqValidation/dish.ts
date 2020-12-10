@@ -1,13 +1,31 @@
 import Joi from "joi";
+import { DishStatus } from "../../entities/Dish";
 
-//MM-7
+function enumValues(enm: any) {
+  return Object.keys(enm).map(key => enm[key]);
+}
+
+//MM-8
 const read = Joi.object({
   query: Joi.object({
-    category_Id: Joi.number().required(),
+    category_id: Joi.number().required(),
     page: Joi.number(),
     size: Joi.number(),
     q: Joi.string(),
   }),
 });
 
-export default {};
+//MM-8
+const update = Joi.object({
+  body: Joi.object({
+    dish_id: Joi.number().required(),
+    name: Joi.string(),
+    description: Joi.string(),
+    code: Joi.string(),
+    price: Joi.number(),
+    discount: Joi.number(),
+    status: Joi.string().valid(...enumValues(DishStatus)),
+  }).required(),
+});
+
+export default { read, update };

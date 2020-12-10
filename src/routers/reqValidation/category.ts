@@ -11,7 +11,7 @@ const create = Joi.object({
 //MM-7
 const read = Joi.object({
   query: Joi.object({
-    menu_Id: Joi.number().required(),
+    menu_id: Joi.number().required(),
     page: Joi.number(),
     size: Joi.number(),
     q: Joi.string(),
