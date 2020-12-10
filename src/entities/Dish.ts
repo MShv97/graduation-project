@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, Unique } from "typeorm";
 import { Category } from "./Category";
 import { Image } from "./Image";
 import { Order } from "./Order";
@@ -7,7 +7,7 @@ export enum DishStatus {
   ACTIVE = "active",
   DISABLED = "disabled",
 }
-
+@Unique(["code", "category"])
 @Entity()
 export class Dish {
   @PrimaryGeneratedColumn({ unsigned: true })
@@ -19,7 +19,7 @@ export class Dish {
   @Column({ type: "text" })
   description: string;
 
-  @Column({ length: 40, unique: true })
+  @Column({ length: 40 })
   code: string;
 
   @Column({ type: "float" })

@@ -3,6 +3,17 @@ import { ResponseSender } from "../helpers";
 import DishServices from "../services/dish";
 
 //MM-8
+async function create(req: Request, res: Response, next: NextFunction) {
+  try {
+    const body = req.body;
+    const results = await DishServices.create(body);
+    ResponseSender({ res: res, status: 200, response: results });
+  } catch (err) {
+    next(err);
+  }
+}
+
+//MM-8
 async function read(req: Request, res: Response, next: NextFunction) {
   try {
     const categoryId = Number(req.query.category_id);
@@ -16,6 +27,7 @@ async function read(req: Request, res: Response, next: NextFunction) {
     next(err);
   }
 }
+
 //MM-8
 async function update(req: Request, res: Response, next: NextFunction) {
   try {
@@ -26,4 +38,16 @@ async function update(req: Request, res: Response, next: NextFunction) {
     next(err);
   }
 }
-export default { read, update };
+
+//MM-8
+async function del(req: Request, res: Response, next: NextFunction) {
+  try {
+    const dishId = Number(req.params.dish_id);
+    const results = await DishServices.del(dishId);
+    ResponseSender({ res: res, status: 200, response: results });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export default { create, read, update, del };

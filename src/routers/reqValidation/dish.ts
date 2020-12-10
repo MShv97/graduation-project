@@ -6,6 +6,17 @@ function enumValues(enm: any) {
 }
 
 //MM-8
+const create = Joi.object({
+  body: Joi.object({
+    category_id: Joi.number().required(),
+    name: Joi.string().required(),
+    description: Joi.string().required(),
+    code: Joi.string().required(),
+    price: Joi.number().required(),
+  }).required(),
+});
+
+//MM-8
 const read = Joi.object({
   query: Joi.object({
     category_id: Joi.number().required(),
@@ -27,5 +38,10 @@ const update = Joi.object({
     status: Joi.string().valid(...enumValues(DishStatus)),
   }).required(),
 });
-
-export default { read, update };
+//MM-8
+const del = Joi.object({
+  params: Joi.object({
+    dish_id: Joi.number().required(),
+  }).required(),
+});
+export default { create, read, update, del };
