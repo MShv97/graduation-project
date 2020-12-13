@@ -11,9 +11,8 @@ const login = async (body: any) => {
     const user = await UserRepo.findOneOrFail({ where: { email: email }, relations: ["restaurant"] });
     // verify password
     if (!(await compare(password, user.password))) throw new CustomError({ status: 401, message: "Password is invalid." });
-    // generate JWT tokens
-    console.log(user);
 
+    // generate JWT tokens
     const payload = { userId: user.id, role: user.role, restaurantId: user.restaurant.id };
     const { access_token, refresh_token } = JWTGenerator(payload);
 
