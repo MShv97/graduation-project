@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, Unique } from "typeorm";
 import { Client } from "./Client";
 import { Restaurant } from "./Restaurant";
 
@@ -7,16 +7,16 @@ export enum TableStatus {
   ACTIVE = "active",
   OFS = "out of service",
 }
-
+@Unique(["code", "restaurant"])
 @Entity()
 export class Table {
   @PrimaryGeneratedColumn({ unsigned: true })
   id: number;
 
-  @Column({ unique: true })
+  @Column()
   code: string;
 
-  @Column({ type: "text" })
+  @Column({ type: "text", nullable: true })
   QR: string;
 
   @Column({ type: "enum", enum: TableStatus, default: TableStatus.ACTIVE })
