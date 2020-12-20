@@ -44,4 +44,10 @@ const del = Joi.object({
     dish_id: Joi.number().required(),
   }).required(),
 });
-export default { create, read, update, del };
+//MM-10
+const deleteImage = Joi.object({
+  params: Joi.object({
+    image_id: Joi.number().required(),
+  }).required(),
+});
+export default { create, read, update, del, deleteImage };

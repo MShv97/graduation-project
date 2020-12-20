@@ -5,8 +5,8 @@ import CategoryServices from "../services/category";
 //MM-7
 async function create(req: Request, res: Response, next: NextFunction) {
   try {
-    const body = req.body;
-    const results = await CategoryServices.create(body);
+    const { body, file } = req;
+    const results = await CategoryServices.create(body, file);
     ResponseSender({ res: res, status: 200, response: results });
   } catch (err) {
     next(err);
@@ -29,8 +29,8 @@ async function read(req: Request, res: Response, next: NextFunction) {
 //MM-7
 async function update(req: Request, res: Response, next: NextFunction) {
   try {
-    const body = req.body;
-    const results = await CategoryServices.update(body);
+    const { body, file } = req;
+    const results = await CategoryServices.update(body, file);
     ResponseSender({ res: res, status: 200, response: results });
   } catch (err) {
     next(err);
@@ -46,10 +46,20 @@ async function del(req: Request, res: Response, next: NextFunction) {
     next(err);
   }
 }
-
+//MM-10
+async function deleteThumpnail(req: Request, res: Response, next: NextFunction) {
+  try {
+    const categoryId = Number(req.params.category_id);
+    const results = await CategoryServices.deleteThumpnail(categoryId);
+    ResponseSender({ res: res, status: 200, response: results });
+  } catch (err) {
+    next(err);
+  }
+}
 export default {
   create,
   read,
   update,
   del,
+  deleteThumpnail,
 };

@@ -124,4 +124,4 @@ const debug = (...messages) => {
   });
 };
 
-export { warn, error, debug, info };
+export default { warn, error, debug, info };

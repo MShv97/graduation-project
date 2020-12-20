@@ -1,6 +1,7 @@
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { AfterRemove, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Dish } from "./Dish";
 import { Menu } from "./Menu";
+import fs from "fs";
 
 @Entity()
 export class Category {

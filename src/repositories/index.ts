@@ -4,7 +4,7 @@ import CategoryRepo from "./Categories";
 import BillRepo from "./Bills";
 import MenuRepo from "./Menus";
 import ClientRepo from "./Clients";
-import ImageRepo from "./Images";
+import DishImagesRepo from "./DishImages";
 import OrderRepo from "./Orders";
 import TableRepo from "./Tables";
 import RestaurantRepo from "./Restaurants";
@@ -19,7 +19,7 @@ export {
   BillRepo,
   MenuRepo,
   ClientRepo,
-  ImageRepo,
+  DishImagesRepo,
   OrderRepo,
   TableRepo,
   RestaurantRepo,

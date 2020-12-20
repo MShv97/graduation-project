@@ -1,5 +1,5 @@
 import { Response, Request, NextFunction } from "express";
-import { logger } from "../helpers";
+import { logger, DeletePublicError } from "../helpers";
 import { CustomError, ResponseSender } from "./index";
 
 const reqLogger = (req: Request, res: Response, next: NextFunction) => {
@@ -9,7 +9,7 @@ const reqLogger = (req: Request, res: Response, next: NextFunction) => {
 
 const errorLogger = (err: any, req: Request, res: Response, next: NextFunction) => {
   console.log(err);
-
+  DeletePublicError(req);
   if (err instanceof CustomError) {
     ResponseSender({ res: res, status: err.status, response: { message: err.message } });
     logger.error(err.message);
@@ -20,4 +20,4 @@ const errorLogger = (err: any, req: Request, res: Response, next: NextFunction) 
   next();
 };
 
-export { reqLogger, errorLogger };
+export default { reqLogger, errorLogger };

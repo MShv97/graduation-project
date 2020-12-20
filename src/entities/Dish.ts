@@ -1,7 +1,8 @@
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, Unique } from "typeorm";
+import { BeforeRemove, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, Unique } from "typeorm";
 import { Category } from "./Category";
-import { Image } from "./Image";
+import { DishImage } from "./DishImage";
 import { Order } from "./Order";
+import fs from "fs";
 
 export enum DishStatus {
   ACTIVE = "active",
@@ -34,9 +35,17 @@ export class Dish {
   @ManyToOne(type => Category, category => category.dishs)
   category: Category;
 
-  @OneToMany(type => Image, image => image.dish)
-  images: Image[];
+  @OneToMany(type => DishImage, dishImage => dishImage.dish)
+  images: DishImage[];
 
   @OneToMany(type => Order, order => order.dish)
   orders: Order[];
+
+  //MM-10
+  //Listener to delete dish images from local storage before deleting dish
+  //Dish images is being deleted with cascade option
+  @BeforeRemove()
+  DeleteImagesFiles() {
+    for (const image of this.images) fs.existsSync(image.path) && fs.unlinkSync(image.path);
+  }
 }

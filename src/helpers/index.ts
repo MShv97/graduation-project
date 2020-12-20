@@ -1,6 +1,7 @@
 import CustomError from "./CustomError";
 import ResponseSender from "./ResponseSender";
-import * as httpLoggers from "./httpLoggers";
-import * as logger from "./logger";
+import httpLoggers from "./httpLoggers";
+import logger from "./logger";
+import DeletePublicError from "./DeletePublicError";
 
-export { CustomError, httpLoggers, ResponseSender, logger };
+export { CustomError, httpLoggers, ResponseSender, logger, DeletePublicError };
