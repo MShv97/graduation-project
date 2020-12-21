@@ -1,5 +1,7 @@
 import "reflect-metadata";
 import express from "express";
+import helmet from "helmet";
+import cors from "cors";
 import { createConnection } from "typeorm";
 import { httpLoggers } from "./helpers";
 import { logger } from "./helpers";
@@ -13,6 +15,10 @@ const start = async () => {
 
   const app = express();
 
+  app.use(express.static(__dirname + "/public"));
+
+  app.use(helmet());
+  app.use(cors());
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   app.use(httpLoggers.reqLogger);
