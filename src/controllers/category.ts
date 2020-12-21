@@ -29,8 +29,8 @@ async function read(req: Request, res: Response, next: NextFunction) {
 //MM-7
 async function update(req: Request, res: Response, next: NextFunction) {
   try {
-    const { body, file } = req;
-    const results = await CategoryServices.update(body, file);
+    const { currUser, body, file } = req;
+    const results = await CategoryServices.update(currUser, body, file);
     ResponseSender({ res: res, status: 200, response: results });
   } catch (err) {
     next(err);
@@ -39,8 +39,9 @@ async function update(req: Request, res: Response, next: NextFunction) {
 //MM-7
 async function del(req: Request, res: Response, next: NextFunction) {
   try {
+    const { currUser } = req;
     const categoryId = Number(req.params.category_id);
-    const results = await CategoryServices.del(categoryId);
+    const results = await CategoryServices.del(currUser, categoryId);
     ResponseSender({ res: res, status: 200, response: results });
   } catch (err) {
     next(err);
@@ -49,8 +50,9 @@ async function del(req: Request, res: Response, next: NextFunction) {
 //MM-10
 async function deleteThumpnail(req: Request, res: Response, next: NextFunction) {
   try {
+    const { currUser } = req;
     const categoryId = Number(req.params.category_id);
-    const results = await CategoryServices.deleteThumpnail(categoryId);
+    const results = await CategoryServices.deleteThumpnail(currUser, categoryId);
     ResponseSender({ res: res, status: 200, response: results });
   } catch (err) {
     next(err);

@@ -31,8 +31,8 @@ async function read(req: Request, res: Response, next: NextFunction) {
 //MM-8
 async function update(req: Request, res: Response, next: NextFunction) {
   try {
-    const { body, files } = req;
-    const results = await DishServices.update(body, files);
+    const { currUser, body, files } = req;
+    const results = await DishServices.update(currUser, body, files);
     ResponseSender({ res: res, status: 200, response: results });
   } catch (err) {
     next(err);
@@ -42,8 +42,9 @@ async function update(req: Request, res: Response, next: NextFunction) {
 //MM-8
 async function del(req: Request, res: Response, next: NextFunction) {
   try {
+    const { currUser } = req;
     const dishId = Number(req.params.dish_id);
-    const results = await DishServices.del(dishId);
+    const results = await DishServices.del(currUser, dishId);
     ResponseSender({ res: res, status: 200, response: results });
   } catch (err) {
     next(err);
@@ -53,8 +54,9 @@ async function del(req: Request, res: Response, next: NextFunction) {
 //MM-10
 async function deleteImage(req: Request, res: Response, next: NextFunction) {
   try {
+    const { currUser } = req;
     const imageId = Number(req.params.image_id);
-    const results = await DishServices.deleteImage(imageId);
+    const results = await DishServices.deleteImage(currUser, imageId);
     ResponseSender({ res: res, status: 200, response: results });
   } catch (err) {
     next(err);

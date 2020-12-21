@@ -1,8 +1,8 @@
 import { CustomError } from "../helpers";
 import { DishImagesRepo, DishRepo } from "../repositories";
-import { getRepository, Like } from "typeorm";
-import { DishImage } from "../entities/DishImage";
+import { Like } from "typeorm";
 import fs from "fs";
+import { DishStatus } from "../entities/Dish";
 
 //MM-8
 async function create(body: any, files: any) {
@@ -34,7 +34,7 @@ async function read(categoryId: number, page: number, size: number, q: string) {
   try {
     const result = await DishRepo.find({
       relations: ["images"],
-      where: { category: categoryId, name: Like(`%${q}%`) },
+      where: { category: categoryId, status: DishStatus.ACTIVE, name: Like(`%${q}%`) },
       skip: page * size,
       take: size,
     });
@@ -44,9 +44,9 @@ async function read(categoryId: number, page: number, size: number, q: string) {
   }
 }
 // MM-8
-async function update(body: any, files: any) {
+async function update(currUser: any, body: any, files: any) {
   try {
-    const dish = await DishRepo.findOneOrFail(body.dish_id);
+    const dish = await DishRepo.dishPermission(currUser.restaurantId, body.dish_id);
     if (body.name) dish.name = body.name;
     if (body.description) dish.description = body.description;
     if (body.price) dish.price = body.price;
@@ -68,9 +68,9 @@ async function update(body: any, files: any) {
 }
 
 //MM-8
-async function del(dishId: number) {
+async function del(currUser: any, dishId: number) {
   try {
-    const dish = await DishRepo.findOneOrFail(dishId, { relations: ["images"] });
+    const dish = await DishRepo.dishPermission(currUser.restaurantId, dishId);
     await DishRepo.remove(dish);
     return "OK";
   } catch (err) {
@@ -80,9 +80,9 @@ async function del(dishId: number) {
 }
 
 //MM-10
-async function deleteImage(imageId: number) {
+async function deleteImage(currUser: any, imageId: number) {
   try {
-    const dishImage = await DishImagesRepo.findOneOrFail(imageId);
+    const dishImage = await DishImagesRepo.dishImagePermission(currUser.restaurantId, imageId);
     await DishImagesRepo.remove(dishImage);
     if (fs.existsSync(dishImage.path)) fs.unlinkSync(dishImage.path);
     return "OK";

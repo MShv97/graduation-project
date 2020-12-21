@@ -33,9 +33,9 @@ async function read(menuId: number, page: number, size: number, q: string) {
   }
 }
 // MM-7
-async function update(body: any, file: any) {
+async function update(currUser: any, body: any, file: any) {
   try {
-    const category = await CategoryRepo.findOneOrFail(body.category_id);
+    const category = await CategoryRepo.categoryPermission(currUser.restaurantId, body.category_id);
     if (body.name) category.name = body.name;
     if (body.description) category.description = body.description;
     if (file) {
@@ -51,9 +51,9 @@ async function update(body: any, file: any) {
   }
 }
 // MM-7
-async function del(categoryId: number) {
+async function del(currUser: any, categoryId: number) {
   try {
-    const category = await CategoryRepo.findOneOrFail(categoryId);
+    const category = await CategoryRepo.categoryPermission(currUser.restaurantId, categoryId);
     await CategoryRepo.delete(category.id);
     fs.existsSync(category.thumpnail) && fs.unlinkSync(category.thumpnail);
     return "OK";
@@ -63,9 +63,10 @@ async function del(categoryId: number) {
   }
 }
 //MM-10
-async function deleteThumpnail(categoryId: number) {
+async function deleteThumpnail(currUser: any, categoryId: number) {
   try {
-    const category = await CategoryRepo.findOneOrFail(categoryId);
+    const category = await CategoryRepo.categoryPermission(currUser.restaurantId, categoryId);
+    await CategoryRepo.delete(category.id);
     await CategoryRepo.update(categoryId, { thumpnail: null });
     fs.existsSync(category.thumpnail) && fs.unlinkSync(category.thumpnail);
     return "OK";
