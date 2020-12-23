@@ -10,7 +10,7 @@ async function create(currUser: any, body: any) {
     table.code = body.code;
 
     await TableRepo.save(table);
-    return "OK";
+    return "Success";
   } catch (err) {
     throw err;
   }
@@ -34,7 +34,7 @@ async function update(currUser: any, body: any) {
     const table = await TableRepo.tablePermission(currUser.restaurantId, body.table_id);
     delete body.table_id;
     await TableRepo.update(table.id, body);
-    return "OK";
+    return "Success";
   } catch (err) {
     if (err.name == "EntityNotFound") throw new CustomError({ status: 404, message: "Table was not found." });
     if (err.name == "UpdateValuesMissingError") throw new CustomError({ status: 400, message: "Cannot perform update query because update values are not defined." });
@@ -46,7 +46,7 @@ async function del(currUser: any, tableId: number) {
   try {
     const table = await TableRepo.tablePermission(currUser.restaurantId, tableId);
     await TableRepo.delete(table.id);
-    return "OK";
+    return "Success";
   } catch (err) {
     if (err.name == "EntityNotFound") throw new CustomError({ status: 404, message: "Table was not found." });
     throw err;

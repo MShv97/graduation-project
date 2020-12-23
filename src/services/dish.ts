@@ -21,7 +21,7 @@ async function create(body: any, files: any) {
         await DishImagesRepo.save(img);
       }
 
-    return "OK";
+    return "Success";
   } catch (err) {
     if (err.code == "ER_NO_REFERENCED_ROW_2") throw new CustomError({ status: 404, message: "Category was not found." });
     if (err.code == "ER_DUP_ENTRY") throw new CustomError({ status: 404, message: "Dish with the same code already exist." });
@@ -58,7 +58,7 @@ async function update(currUser: any, body: any, files: any) {
         const img = DishImagesRepo.create({ path: file.path, dish: dish });
         await DishImagesRepo.save(img);
       }
-    return "Ok";
+    return "Success";
   } catch (err) {
     if (err.name == "EntityNotFound") throw new CustomError({ status: 404, message: "Dish was not found." });
     if (err.name == "UpdateValuesMissingError") throw new CustomError({ status: 400, message: "Cannot perform update query because update values are not defined." });
@@ -72,7 +72,7 @@ async function del(currUser: any, dishId: number) {
   try {
     const dish = await DishRepo.dishPermission(currUser.restaurantId, dishId);
     await DishRepo.remove(dish);
-    return "OK";
+    return "Success";
   } catch (err) {
     if (err.name == "EntityNotFound") throw new CustomError({ status: 404, message: "Dish was not found." });
     throw err;
@@ -85,7 +85,7 @@ async function deleteImage(currUser: any, imageId: number) {
     const dishImage = await DishImagesRepo.dishImagePermission(currUser.restaurantId, imageId);
     await DishImagesRepo.remove(dishImage);
     if (fs.existsSync(dishImage.path)) fs.unlinkSync(dishImage.path);
-    return "OK";
+    return "Success";
   } catch (err) {
     if (err.name == "EntityNotFound") throw new CustomError({ status: 404, message: "Dish Image was not found." });
     throw err;

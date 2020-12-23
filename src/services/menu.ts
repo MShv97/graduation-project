@@ -11,7 +11,7 @@ async function create(currUser: any, body: any) {
     menu.restaurant = currUser.restaurantId;
 
     await MenuRepo.save(menu);
-    return "OK";
+    return "Success";
   } catch (err) {
     throw err;
   }
@@ -35,7 +35,7 @@ async function update(currUser: any, body: any) {
     const menu = await MenuRepo.menuPermission(currUser.restaurantId, body.menu_id);
     delete body.menu_id;
     await MenuRepo.update(menu.id, body);
-    return "OK";
+    return "Success";
   } catch (err) {
     if (err.name == "EntityNotFound") throw new CustomError({ status: 404, message: "Menu was not found." });
     if (err.name == "UpdateValuesMissingError") throw new CustomError({ status: 400, message: "Cannot perform update query because update values are not defined." });
@@ -47,7 +47,7 @@ async function del(currUser: any, menuId: number) {
   try {
     const menu = await MenuRepo.menuPermission(currUser.restaurantId, menuId);
     await MenuRepo.delete(menu.id);
-    return "OK";
+    return "Success";
   } catch (err) {
     if (err.name == "EntityNotFound") throw new CustomError({ status: 404, message: "Menu was not found." });
     throw err;

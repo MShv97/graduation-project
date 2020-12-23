@@ -12,7 +12,7 @@ async function create(body: any, file: any) {
     category.menu = body.menu_id;
     category.thumpnail = file.path;
     await CategoryRepo.save(category);
-    return "Ok";
+    return "Success";
   } catch (err) {
     fs.unlinkSync(file.path);
     if (err.code == "ER_NO_REFERENCED_ROW_2") throw new CustomError({ status: 404, message: "Menu was not found." });
@@ -43,7 +43,7 @@ async function update(currUser: any, body: any, file: any) {
       category.thumpnail = file.path;
     }
     await CategoryRepo.save(category);
-    return "Ok";
+    return "Success";
   } catch (err) {
     if (err.name == "EntityNotFound") throw new CustomError({ status: 404, message: "Category was not found." });
     if (err.name == "UpdateValuesMissingError") throw new CustomError({ status: 400, message: "Cannot perform update query because update values are not defined." });
@@ -56,7 +56,7 @@ async function del(currUser: any, categoryId: number) {
     const category = await CategoryRepo.categoryPermission(currUser.restaurantId, categoryId);
     await CategoryRepo.delete(category.id);
     fs.existsSync(category.thumpnail) && fs.unlinkSync(category.thumpnail);
-    return "OK";
+    return "Success";
   } catch (err) {
     if (err.name == "EntityNotFound") throw new CustomError({ status: 404, message: "Category was not found." });
     throw err;
@@ -69,7 +69,7 @@ async function deleteThumpnail(currUser: any, categoryId: number) {
     await CategoryRepo.delete(category.id);
     await CategoryRepo.update(categoryId, { thumpnail: null });
     fs.existsSync(category.thumpnail) && fs.unlinkSync(category.thumpnail);
-    return "OK";
+    return "Success";
   } catch (err) {
     if (err.name == "EntityNotFound") throw new CustomError({ status: 404, message: "Category was not found." });
     throw err;

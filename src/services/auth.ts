@@ -38,7 +38,7 @@ const signup = async (body: any) => {
     user.birthdate = body.birthdate;
     user.restaurant = body.restaurant_id;
     await UserRepo.save(user);
-    return "OK";
+    return "Success";
   } catch (err) {
     if (err.code == "ER_DUP_ENTRY") throw new CustomError({ status: 409, message: "Email already exist." });
     if (err.code == "ER_NO_REFERENCED_ROW_2") throw new CustomError({ status: 404, message: "Restaurant was not found." });
