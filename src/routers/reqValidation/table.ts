@@ -10,14 +10,7 @@ const create = Joi.object({
     code: Joi.string().required(),
   }).required(),
 });
-//MM-9
-const read = Joi.object({
-  query: Joi.object({
-    page: Joi.number(),
-    size: Joi.number(),
-    q: Joi.string(),
-  }),
-});
+
 //MM-9
 const update = Joi.object({
   body: Joi.object({
@@ -27,4 +20,4 @@ const update = Joi.object({
   }).required(),
 });
 
-export default { create, read, update };
+export default { create, update };
