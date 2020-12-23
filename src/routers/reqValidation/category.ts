@@ -25,11 +25,5 @@ const update = Joi.object({
     description: Joi.string(),
   }).required(),
 });
-//MM-7
-const del = Joi.object({
-  params: Joi.object({
-    category_id: Joi.number().required(),
-  }).required(),
-});
 
-export default { create, read, update, del };
+export default { create, read, update };

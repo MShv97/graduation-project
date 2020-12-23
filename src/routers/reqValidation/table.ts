@@ -26,11 +26,5 @@ const update = Joi.object({
     status: Joi.string().valid(...enumValues(TableStatus)),
   }).required(),
 });
-//MM-9
-const del = Joi.object({
-  params: Joi.object({
-    table_id: Joi.number().required(),
-  }).required(),
-});
 
-export default { create, read, update, del };
+export default { create, read, update };

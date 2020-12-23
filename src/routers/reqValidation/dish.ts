@@ -38,16 +38,5 @@ const update = Joi.object({
     status: Joi.string().valid(...enumValues(DishStatus)),
   }).required(),
 });
-//MM-8
-const del = Joi.object({
-  params: Joi.object({
-    dish_id: Joi.number().required(),
-  }).required(),
-});
-//MM-10
-const deleteImage = Joi.object({
-  params: Joi.object({
-    image_id: Joi.number().required(),
-  }).required(),
-});
-export default { create, read, update, del, deleteImage };
+
+export default { create, read, update };

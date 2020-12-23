@@ -1,9 +1,10 @@
 import Validator from "./Validator";
-import AuthValidator from "./auth";
-import RestaurantValidator from "./restaurant";
-import MenuValidator from "./menu";
-import CategoryValidator from "./category";
-import DishValidator from "./dish";
-import TableValidator from "./table";
+import AuthValidators from "./auth";
+import RestaurantValidators from "./restaurant";
+import MenuValidators from "./menu";
+import CategoryValidators from "./category";
+import DishValidators from "./dish";
+import TableValidators from "./table";
+import GlobalValidators from "./Global";
 
-export { Validator, AuthValidator, RestaurantValidator, MenuValidator, CategoryValidator, DishValidator, TableValidator };
+export { Validator, AuthValidators, RestaurantValidators, MenuValidators, CategoryValidators, DishValidators, TableValidators, GlobalValidators };
