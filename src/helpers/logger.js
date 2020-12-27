@@ -1,5 +1,6 @@
-import winston from "winston";
-import chalk from "chalk";
+const winston = require("winston");
+const chalk = require("chalk");
+const moment = require("moment");
 
 const levels = {
   Error: 0,
@@ -12,9 +13,8 @@ const generalLogger = winston.createLogger({
   level: "Debug",
   levels,
   format: winston.format.combine(
-    winston.format.timestamp({
-      format: "YYYY-MM-DD HH:mm:ss",
-    }),
+    winston.format.timestamp(),
+    //IOT-252
     winston.format.printf(({ level, message, timestamp, path, trace }) => {
       switch (level) {
         case "Error":
@@ -27,18 +27,18 @@ const generalLogger = winston.createLogger({
           level = chalk.bold.greenBright(level);
           break;
         case "Debug":
-          level = chalk.bold.blueBright(level);
+          level = chalk.bold.gray(level);
           break;
       }
-      timestamp = chalk.magenta(timestamp);
-      typeof message === "string"
-        ? (message = chalk.whiteBright(message))
-        : (message = chalk.whiteBright("\n" + JSON.stringify(message, null, 4)) + "\n");
+      timestamp = moment(timestamp).format("YYYY-MM-DD HH:mm:ss");
+      timestamp = chalk.blue(timestamp);
       path = chalk.bold.magentaBright("Path:") + path;
-      if (level === "Error") {
-        return `${timestamp}  ${level}:  ${path} \n  ${trace}`;
+      let msg;
+      typeof message === "string" ? (msg = chalk.whiteBright(message)) : (msg = chalk.whiteBright("\n" + JSON.stringify(message, null, 4)) + "\n");
+      if (level === chalk.bold.redBright("Error") && message.stack) {
+        return `${timestamp}  ${level}: ${path} \n${message.stack}`;
       } else {
-        return `${timestamp}  ${level}: ${message}  ${path}`;
+        return `${timestamp}  ${level}: ${msg}  ${path}`;
       }
     })
   ),
@@ -58,20 +58,15 @@ if (process.env.NODE_ENV === "production") {
  *
  */
 const logger = (level, message) => {
-  let error = new Error(message);
-  let stackTrace = <any>error.stack.split("\n");
-  stackTrace = stackTrace[Math.min(5, stackTrace.length - 1)];
-  //let filePath = stackTrace.split('(')[1];
-  //filePath = filePath[Math.min(5, filePath.length - 1)];
-  //filePath = filePath.replace(')', '');
-  //let functionName = stackTrace.split(' ')[5];
-  const path = stackTrace.slice(3);
-  generalLogger.log({
-    level,
-    message,
-    path,
-    trace: error.stack,
-  });
+  let error = new Error();
+  let stackTrace = error.stack.split("\n");
+  stackTrace = stackTrace[Math.min(3, stackTrace.length - 1)];
+  let filePath = stackTrace.split("(");
+  filePath = filePath[Math.min(1, filePath.length - 1)];
+  filePath = filePath.replace(")", "");
+  filePath = filePath.replace("    at ", "");
+  const path = filePath;
+  generalLogger.log({ level, message, path });
 };
 /**
  * Use It For Warnings
@@ -79,11 +74,10 @@ const logger = (level, message) => {
  * @returns {void}
  * @param messages
  */
+//IOT-252
 //allow logging more than one object
 const warn = (...messages) => {
-  messages.forEach(message => {
-    logger("Warn", message);
-  });
+  for (const message of messages) logger("Warn", message);
 };
 
 /**
@@ -92,11 +86,10 @@ const warn = (...messages) => {
  * @returns {void}
  * @param messages
  */
+//IOT-252
 //allow logging more than one object
 const error = (...messages) => {
-  messages.forEach(message => {
-    logger("Error", message);
-  });
+  for (const message of messages) logger("Error", message);
 };
 /**
  * Use It For Information
@@ -104,11 +97,10 @@ const error = (...messages) => {
  * @returns {void}
  * @param messages
  */
+//IOT-252
 //allow logging more than one object
 const info = (...messages) => {
-  messages.forEach(message => {
-    logger("Info", message);
-  });
+  for (const message of messages) logger("Info", message);
 };
 
 /**
@@ -117,11 +109,15 @@ const info = (...messages) => {
  * @returns {void}
  * @param messages
  */
+//IOT-252
 //allow logging more than one object
 const debug = (...messages) => {
-  messages.forEach(message => {
-    logger("Debug", message);
-  });
+  for (const message of messages) logger("Debug", message);
 };
 
-export default { warn, error, debug, info };
+module.exports = {
+  info,
+  warn,
+  error,
+  debug,
+};
