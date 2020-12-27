@@ -5,6 +5,10 @@ import { DishValidators, GlobalValidators, Validator } from "./reqValidation";
 
 const router: Router = Router();
 
+/**********************
+ * @Router /api/dish  *
+ **********************/
+
 //MM-8
 router.post("/", authMiddleware, checkRoleMiddleware(["admin"]), MulterStorage.array("images", 4), Validator(DishValidators.create), DishController.create);
 router.get("/", Validator(DishValidators.read), DishController.read);

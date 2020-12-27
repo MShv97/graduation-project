@@ -4,6 +4,10 @@ import { AuthValidators, Validator } from "./reqValidation";
 
 const router: Router = Router();
 
+/**********************
+ * @Router /api/auth  *
+ **********************/
+
 router.post("/login", Validator(AuthValidators.login), AuthController.login);
 router.post("/signup", Validator(AuthValidators.signup), AuthController.signup);
 router.post("/refresh-token", Validator(AuthValidators.refreshToken), AuthController.refreshToken);

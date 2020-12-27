@@ -5,6 +5,10 @@ import { GlobalValidators, MenuValidators, Validator } from "./reqValidation";
 
 const router: Router = Router();
 
+/**********************
+ * @Router /api/menu  *
+ **********************/
+
 //MM-6
 router.post("/", authMiddleware, checkRoleMiddleware(["admin"]), Validator(MenuValidators.create), MenuController.create);
 router.get("/", authMiddleware, checkRoleMiddleware(["admin"]), Validator(GlobalValidators.read), MenuController.read);

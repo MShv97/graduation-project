@@ -14,7 +14,6 @@ const generalLogger = winston.createLogger({
   levels,
   format: winston.format.combine(
     winston.format.timestamp(),
-    //IOT-252
     winston.format.printf(({ level, message, timestamp, path, trace }) => {
       switch (level) {
         case "Error":
@@ -74,7 +73,6 @@ const logger = (level, message) => {
  * @returns {void}
  * @param messages
  */
-//IOT-252
 //allow logging more than one object
 const warn = (...messages) => {
   for (const message of messages) logger("Warn", message);
@@ -86,7 +84,6 @@ const warn = (...messages) => {
  * @returns {void}
  * @param messages
  */
-//IOT-252
 //allow logging more than one object
 const error = (...messages) => {
   for (const message of messages) logger("Error", message);
@@ -97,7 +94,6 @@ const error = (...messages) => {
  * @returns {void}
  * @param messages
  */
-//IOT-252
 //allow logging more than one object
 const info = (...messages) => {
   for (const message of messages) logger("Info", message);
@@ -109,7 +105,6 @@ const info = (...messages) => {
  * @returns {void}
  * @param messages
  */
-//IOT-252
 //allow logging more than one object
 const debug = (...messages) => {
   for (const message of messages) logger("Debug", message);

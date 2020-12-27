@@ -15,16 +15,27 @@ const start = async () => {
 
   const app = express();
 
+  /***************
+   * @Middleware *
+   ***************/
   app.use(express.static(__dirname + "/public"));
 
   app.use(helmet());
   app.use(cors());
+  // JSON Parser
   app.use(express.json());
+  // urlencoded Parser
   app.use(express.urlencoded({ extended: true }));
+  // HTTP Logger
   app.use(httpLoggers.reqLogger);
+  // Main Router
   app.use(router);
+  // Request Error Handler
   app.use(httpLoggers.errorLogger);
-
+  /***********
+   * @Server *
+   ***********/
+  // Server Connection
   app.listen(process.env.PORT, () => {
     logger.info(`server is running on port ${process.env.PORT} ... `);
   });

@@ -5,6 +5,10 @@ import { CategoryValidators, GlobalValidators, Validator } from "./reqValidation
 
 const router: Router = Router();
 
+/*************************
+ * @Router /api/category *
+ *************************/
+
 //MM-7
 router.post("/", authMiddleware, checkRoleMiddleware(["admin"]), MulterStorage.single("thumpnail"), Validator(CategoryValidators.create), CategoryController.create);
 router.get("/", Validator(CategoryValidators.read), CategoryController.read);

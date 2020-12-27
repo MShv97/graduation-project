@@ -1,5 +1,12 @@
 import { sign } from "jsonwebtoken";
 
+/**
+ * Json web tokens generator
+ *
+ * @param {object} payload
+ * @returns {object} {access_token, refresh_token}
+ */
+
 export default (payload: any) => {
   const access_token = sign(payload, process.env.JWT_ACCESS_SECRET, {
     expiresIn: process.env.JWT_ACCESS_expiresIn,

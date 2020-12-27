@@ -4,6 +4,10 @@ import { AuthValidators, RestaurantValidators, Validator } from "./reqValidation
 
 const router: Router = Router();
 
+/****************************
+ * @Router /api/restaurant  *
+ ****************************/
+
 //MM-6
 // login restaurant validator is the same from Auth
 router.post("/login", Validator(AuthValidators.login), RestaurantController.login);
