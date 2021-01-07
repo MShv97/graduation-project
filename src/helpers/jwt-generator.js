@@ -8,11 +8,11 @@ const { sign } = require("jsonwebtoken");
  */
 
 module.exports = (payload) => {
-  const access_token = sign(payload, process.env.JWT_ACCESS_SECRET, {
+  const accessToken = sign(payload, process.env.JWT_ACCESS_SECRET, {
     expiresIn: process.env.JWT_ACCESS_expiresIn,
   });
-  const refresh_token = sign(payload, process.env.JWT_REFRESH_SECRET, {
+  const refreshToken = sign(payload, process.env.JWT_REFRESH_SECRET, {
     expiresIn: process.env.JWT_REFRESH_expiresIn,
   });
-  return { access_token, refresh_token };
+  return { accessToken, refreshToken };
 };

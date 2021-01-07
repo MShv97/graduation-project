@@ -110,6 +110,13 @@ const debug = (...messages) => {
   for (const message of messages) logger("Debug", message);
 };
 
+global.logger = {
+  info,
+  warn,
+  error,
+  debug,
+};
+
 module.exports = {
   info,
   warn,

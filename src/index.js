@@ -3,15 +3,15 @@ require("dotenv").config();
 const helmet = require("helmet");
 const cors = require("cors");
 const db = require("./datebase");
-const { httpLoggers } = require("./middlewares");
-const { logger } = require("./helpers");
+const { httpLogger } = require("./middlewares");
+const Exception = require("./middlewares/exception");
 
 const start = async () => {
   logger.info("Connecting to DB");
-  await db.init();
+  //await db.sync({ force: true, alter: true });
   logger.info("DB IS READY.");
 
-  const router = require("./models/router");
+  const router = require("./app/router");
 
   const app = express();
 
@@ -27,11 +27,11 @@ const start = async () => {
   // urlencoded Parser
   app.use(express.urlencoded({ extended: true }));
   // HTTP Logger
-  app.use(httpLoggers.reqLogger);
+  app.use(httpLogger);
   // Main Router
   app.use(router);
   // Request Error Handler
-  app.use(httpLoggers.errorLogger);
+  app.use(Exception.handler);
   /***********
    * @Server *
    ***********/
