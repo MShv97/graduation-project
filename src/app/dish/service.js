@@ -42,10 +42,14 @@ module.exports = {
   },
   //MM-8
   delete: async (user, id) => {
-    //check premssion to dish
-    await db.Dish.checkPermission(user, id);
-    //delete
-    await db.Dish.destroy({ where: { id } });
+    await sequelize.transaction(async (trx) => {
+      await Promise.all([
+        //check premssion to dish
+        db.Dish.checkPermission(user, id),
+        //delete
+        db.Dish.destroy({ where: { id }, transaction: trx }),
+      ]);
+    });
   },
   //MM-16
   getById: async (user, id) => {
