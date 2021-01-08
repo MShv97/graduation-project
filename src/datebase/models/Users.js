@@ -22,7 +22,7 @@ module.exports = (sequelize) => {
   );
 
   User.associate = (models) => {
-    User.belongsTo(models.Restaurant, { foreignKey: { name: "restaurant_id", allowNull: false } });
+    User.belongsTo(models.Restaurant, { foreignKey: { name: "restaurantId", allowNull: false } });
   };
 
   return User;

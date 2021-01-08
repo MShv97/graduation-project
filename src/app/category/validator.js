@@ -3,7 +3,7 @@ import Joi from "joi";
 //MM-7
 const create = Joi.object({
   body: Joi.object({
-    menu_id: Joi.number().required(),
+    menuId: Joi.number().required(),
     name: Joi.string().required(),
     description: Joi.string().required(),
   }).required(),
@@ -11,7 +11,7 @@ const create = Joi.object({
 //MM-7
 const read = Joi.object({
   query: Joi.object({
-    menu_id: Joi.number().required(),
+    menuId: Joi.number().required(),
     page: Joi.number(),
     size: Joi.number(),
     q: Joi.string(),
@@ -20,7 +20,7 @@ const read = Joi.object({
 //MM-7
 const update = Joi.object({
   body: Joi.object({
-    category_id: Joi.number().required(),
+    categoryId: Joi.number().required(),
     name: Joi.string(),
     description: Joi.string(),
   }).required(),

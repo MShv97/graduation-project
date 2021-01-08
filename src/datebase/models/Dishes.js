@@ -13,7 +13,7 @@ module.exports = (sequelize) => {
             required: true,
             attributes: [],
             model: db.Category,
-            include: [{ attributes: [], model: db.Menu, where: { restaurant_id: user.restaurantId } }],
+            include: [{ attributes: [], model: db.Menu, where: { restaurantId: user.restaurantId } }],
           },
         ],
       });
@@ -40,9 +40,9 @@ module.exports = (sequelize) => {
   );
 
   Dish.associate = (models) => {
-    Dish.belongsTo(models.Category, { foreignKey: { name: "category_id", allowNull: false } });
-    Dish.hasMany(models.Order, { foreignKey: { name: "dish_id", allowNull: false } });
-    Dish.hasMany(models.DishImage, { as: "images", foreignKey: { name: "dish_id", allowNull: false } });
+    Dish.belongsTo(models.Category, { foreignKey: { name: "categoryId", allowNull: false } });
+    Dish.hasMany(models.Order, { foreignKey: { name: "dishId", allowNull: false } });
+    Dish.hasMany(models.DishImage, { as: "images", foreignKey: { name: "dishId", allowNull: false } });
   };
 
   return Dish;

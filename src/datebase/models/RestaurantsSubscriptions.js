@@ -18,9 +18,9 @@ module.exports = (sequelize) => {
   );
 
   RestaurantsSubscription.associate = (models) => {
-    RestaurantsSubscription.belongsTo(models.Subscription, { foreignKey: { name: "subscription_id", allowNull: false } });
-    RestaurantsSubscription.belongsTo(models.Restaurant, { foreignKey: { name: "restaurant_id", allowNull: false } });
-    RestaurantsSubscription.belongsTo(models.PaymentMethod, { foreignKey: { name: "payment_method_id", allowNull: false } });
+    RestaurantsSubscription.belongsTo(models.Subscription, { foreignKey: { name: "subscriptionId", allowNull: false } });
+    RestaurantsSubscription.belongsTo(models.Restaurant, { foreignKey: { name: "restaurantId", allowNull: false } });
+    RestaurantsSubscription.belongsTo(models.PaymentMethod, { foreignKey: { name: "paymentMethodId", allowNull: false } });
   };
 
   return RestaurantsSubscription;

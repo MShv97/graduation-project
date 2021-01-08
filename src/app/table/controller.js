@@ -42,7 +42,7 @@ async function update(req: Request, res: Response, next: NextFunction) {
 async function del(req: Request, res: Response, next: NextFunction) {
   try {
     const { currUser } = req;
-    const tableId = Number(req.params.table_id);
+    const tableId = Number(req.params.tableId);
     const results = await TableServices.del(currUser, tableId);
     ResponseSender({ res: res, status: 200, response: results });
   } catch (err) {

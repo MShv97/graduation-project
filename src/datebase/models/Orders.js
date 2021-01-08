@@ -17,8 +17,8 @@ module.exports = (sequelize) => {
   );
 
   Order.associate = (models) => {
-    Order.belongsTo(models.Client, { foreignKey: { name: "clint_id", allowNull: false } });
-    Order.belongsTo(models.Dish, { foreignKey: { name: "dish_id", allowNull: false } });
+    Order.belongsTo(models.Client, { foreignKey: { name: "clintId", allowNull: false } });
+    Order.belongsTo(models.Dish, { foreignKey: { name: "dishId", allowNull: false } });
   };
 
   return Order;

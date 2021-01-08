@@ -14,7 +14,7 @@ const create = Joi.object({
 //MM-9
 const update = Joi.object({
   body: Joi.object({
-    table_id: Joi.number().required(),
+    tableId: Joi.number().required(),
     code: Joi.string(),
     status: Joi.string().valid(...enumValues(TableStatus)),
   }).required(),

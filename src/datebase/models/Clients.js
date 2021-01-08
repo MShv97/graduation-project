@@ -17,9 +17,9 @@ module.exports = (sequelize) => {
   );
 
   Client.associate = (models) => {
-    Client.belongsTo(models.Table, { foreignKey: { name: "table_id", allowNull: false } });
-    Client.hasMany(models.Order, { foreignKey: { name: "client_id", allowNull: false } });
-    Client.hasOne(models.Bill, { foreignKey: { name: "client_id", allowNull: false } });
+    Client.belongsTo(models.Table, { foreignKey: { name: "tableId", allowNull: false } });
+    Client.hasMany(models.Order, { foreignKey: { name: "clientId", allowNull: false } });
+    Client.hasOne(models.Bill, { foreignKey: { name: "clientId", allowNull: false } });
   };
 
   return Client;

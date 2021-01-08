@@ -9,7 +9,7 @@ async function create(body: any, file: any) {
     const category = CategoryRepo.create();
     category.name = body.name;
     category.description = body.description;
-    category.menu = body.menu_id;
+    category.menu = body.menuId;
     category.thumpnail = file.path;
     await CategoryRepo.save(category);
     return "Success";
@@ -35,7 +35,7 @@ async function read(menuId: number, page: number, size: number, q: string) {
 // MM-7
 async function update(currUser: any, body: any, file: any) {
   try {
-    const category = await CategoryRepo.categoryPermission(currUser.restaurantId, body.category_id);
+    const category = await CategoryRepo.categoryPermission(currUser.restaurantId, body.categoryId);
     if (body.name) category.name = body.name;
     if (body.description) category.description = body.description;
     if (file) {
@@ -46,7 +46,8 @@ async function update(currUser: any, body: any, file: any) {
     return "Success";
   } catch (err) {
     if (err.name == "EntityNotFound") throw new CustomError({ status: 404, message: "Category was not found." });
-    if (err.name == "UpdateValuesMissingError") throw new CustomError({ status: 400, message: "Cannot perform update query because update values are not defined." });
+    if (err.name == "UpdateValuesMissingError")
+      throw new CustomError({ status: 400, message: "Cannot perform update query because update values are not defined." });
     throw err;
   }
 }

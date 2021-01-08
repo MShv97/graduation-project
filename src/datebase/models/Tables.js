@@ -18,8 +18,8 @@ module.exports = (sequelize) => {
   );
 
   Table.associate = (models) => {
-    Table.hasMany(models.Client, { foreignKey: { name: "table_id", allowNull: false } });
-    Table.belongsTo(models.Restaurant, { foreignKey: { name: "restaurant_id", allowNull: false } });
+    Table.hasMany(models.Client, { foreignKey: { name: "tableId", allowNull: false } });
+    Table.belongsTo(models.Restaurant, { foreignKey: { name: "restaurantId", allowNull: false } });
   };
 
   return Table;

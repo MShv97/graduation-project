@@ -15,7 +15,7 @@ module.exports = (sequelize) => {
   );
 
   Bill.associate = (models) => {
-    // Bill.hasOne(models.Client, { foreignKey: "client_id" });
+    // Bill.hasOne(models.Client, { foreignKey: "clientId" });
   };
 
   return Bill;

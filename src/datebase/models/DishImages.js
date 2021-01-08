@@ -15,7 +15,7 @@ module.exports = (sequelize) => {
   );
 
   DishImage.associate = (models) => {
-    DishImage.belongsTo(models.Dish, { foreignKey: { name: "dish_id", allowNull: false } });
+    DishImage.belongsTo(models.Dish, { foreignKey: { name: "dishId", allowNull: false } });
   };
 
   return DishImage;

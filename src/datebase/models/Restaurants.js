@@ -18,10 +18,10 @@ module.exports = (sequelize) => {
   );
 
   Restaurant.associate = (models) => {
-    Restaurant.hasMany(models.Menu, { foreignKey: { name: "restaurant_id", allowNull: false } });
-    Restaurant.hasMany(models.Table, { foreignKey: { name: "restaurant_id", allowNull: false } });
-    Restaurant.hasMany(models.RestaurantsSubscription, { foreignKey: { name: "restaurant_id", allowNull: false } });
-    Restaurant.hasMany(models.User, { foreignKey: { name: "restaurant_id", allowNull: false } });
+    Restaurant.hasMany(models.Menu, { foreignKey: { name: "restaurantId", allowNull: false } });
+    Restaurant.hasMany(models.Table, { foreignKey: { name: "restaurantId", allowNull: false } });
+    Restaurant.hasMany(models.RestaurantsSubscription, { foreignKey: { name: "restaurantId", allowNull: false } });
+    Restaurant.hasMany(models.User, { foreignKey: { name: "restaurantId", allowNull: false } });
   };
 
   return Restaurant;

@@ -15,7 +15,7 @@ async function create(req: Request, res: Response, next: NextFunction) {
 //MM-7
 async function read(req: Request, res: Response, next: NextFunction) {
   try {
-    const menuId = Number(req.query.menu_id);
+    const menuId = Number(req.query.menuId);
     const page = Number(req.query.page) || 0;
     const size = Number(req.query.size) || 8;
     const q = req.query.q ? String(req.query.q) : "";
@@ -40,7 +40,7 @@ async function update(req: Request, res: Response, next: NextFunction) {
 async function del(req: Request, res: Response, next: NextFunction) {
   try {
     const { currUser } = req;
-    const categoryId = Number(req.params.category_id);
+    const categoryId = Number(req.params.categoryId);
     const results = await CategoryServices.del(currUser, categoryId);
     ResponseSender({ res: res, status: 200, response: results });
   } catch (err) {
@@ -51,7 +51,7 @@ async function del(req: Request, res: Response, next: NextFunction) {
 async function deleteThumpnail(req: Request, res: Response, next: NextFunction) {
   try {
     const { currUser } = req;
-    const categoryId = Number(req.params.category_id);
+    const categoryId = Number(req.params.categoryId);
     const results = await CategoryServices.deleteThumpnail(currUser, categoryId);
     ResponseSender({ res: res, status: 200, response: results });
   } catch (err) {

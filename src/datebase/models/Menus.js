@@ -17,8 +17,8 @@ module.exports = (sequelize) => {
   );
 
   Menu.associate = (models) => {
-    Menu.belongsTo(models.Restaurant, { foreignKey: { name: "restaurant_id", allowNull: false } });
-    Menu.hasMany(models.Category, { foreignKey: { name: "menu_id", allowNull: false } });
+    Menu.belongsTo(models.Restaurant, { foreignKey: { name: "restaurantId", allowNull: false } });
+    Menu.hasMany(models.Category, { foreignKey: { name: "menuId", allowNull: false } });
   };
 
   return Menu;

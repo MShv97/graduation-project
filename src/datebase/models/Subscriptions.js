@@ -17,7 +17,7 @@ module.exports = (sequelize) => {
   );
 
   Subscription.associate = (models) => {
-    Subscription.hasMany(models.RestaurantsSubscription, { foreignKey: { name: "subscription_id", allowNull: false } });
+    Subscription.hasMany(models.RestaurantsSubscription, { foreignKey: { name: "subscriptionId", allowNull: false } });
   };
 
   return Subscription;

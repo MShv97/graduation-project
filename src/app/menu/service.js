@@ -32,13 +32,14 @@ async function read(currUser: any, page: number, size: number, q: string) {
 //MM-6
 async function update(currUser: any, body: any) {
   try {
-    const menu = await MenuRepo.menuPermission(currUser.restaurantId, body.menu_id);
-    delete body.menu_id;
+    const menu = await MenuRepo.menuPermission(currUser.restaurantId, body.menuId);
+    delete body.menuId;
     await MenuRepo.update(menu.id, body);
     return "Success";
   } catch (err) {
     if (err.name == "EntityNotFound") throw new CustomError({ status: 404, message: "Menu was not found." });
-    if (err.name == "UpdateValuesMissingError") throw new CustomError({ status: 400, message: "Cannot perform update query because update values are not defined." });
+    if (err.name == "UpdateValuesMissingError")
+      throw new CustomError({ status: 400, message: "Cannot perform update query because update values are not defined." });
     throw err;
   }
 }

@@ -11,7 +11,7 @@ const create = Joi.object({
 //MM-6
 const update = Joi.object({
   body: Joi.object({
-    menu_id: Joi.number().required(),
+    menuId: Joi.number().required(),
     name: Joi.string(),
     description: Joi.string(),
   }).required(),
