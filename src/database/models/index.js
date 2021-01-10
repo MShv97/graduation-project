@@ -1,6 +1,6 @@
 "use strict";
 
-require("dotenv").config();
+proccess.env.NODE_ENV == "development" && require("dotenv").config();
 const fs = require("fs");
 const path = require("path");
 const { Sequelize } = require("sequelize");
