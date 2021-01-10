@@ -13,15 +13,17 @@ module.exports = {
     if (!(await compare(password, user.password))) throw new Exception(401, "Password is invalid.");
     // generate JWT tokens
     const payload = { userId: user.id, role: user.role, restaurantId: user.restaurantId };
-    const data = JWTGenerator(payload);
+    const result = JWTGenerator(payload);
+    result.role = user.role;
 
-    return { data };
+    return result;
   },
   refreshToken: async (body) => {
     const { userId, role, restaurantId } = verify(body.refreshToken, process.env.JWT_REFRESH_SECRET);
     const payload = { userId, role, restaurantId };
-    const data = JWTGenerator(payload);
-    data.role = role;
-    return { data };
+    const result = JWTGenerator(payload);
+    result.role = role;
+
+    return result;
   },
 };
