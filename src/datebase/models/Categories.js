@@ -1,4 +1,5 @@
 const { Model, DataTypes } = require("sequelize");
+const { statusCodes } = require("../../helpers");
 
 module.exports = (sequelize) => {
   class Category extends Model {
@@ -12,7 +13,7 @@ module.exports = (sequelize) => {
             required: true,
             attributes: [],
             model: db.Menu,
-            where: { restaurantId: user.restaurantId } 
+            where: { restaurantId: user.restaurantId },
           },
         ],
       });
@@ -24,7 +25,7 @@ module.exports = (sequelize) => {
     {
       name: { type: DataTypes.STRING(100) },
       description: { type: DataTypes.TEXT },
-      thumpnail: { type: DataTypes.TEXT, nullable: true },
+      icon: { type: DataTypes.TEXT, nullable: true },
     },
     {
       sequelize,

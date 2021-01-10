@@ -35,6 +35,10 @@ class Exception extends Error {
       message = err.message;
     }
 
+    if (err.errCode == statusCodes.ITEM_NOT_FOUND) {
+      message = "Not found.";
+    }
+
     logger.error(err);
     res.status(errCode).send({ message });
   }

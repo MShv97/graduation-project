@@ -68,8 +68,7 @@ module.exports = {
         },
       ],
     });
-    if (!result) throw new Exception(statusCodes.ITEM_NOT_FOUND, "Not Found");
-    return { data: result };
+    return result;
   },
   //MM-16
   getAll: async (user, query) => {
@@ -86,8 +85,8 @@ module.exports = {
       ],
       offset: Number(query.offset),
       limit: Number(query.limit),
+      distinct: true,
     });
-    if (rows.length == 0) if (!result) throw new Exception(statusCodes.ITEM_NOT_FOUND, "Not Found");
     return { totalCount: count, data: rows };
   },
 };

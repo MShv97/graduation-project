@@ -8,48 +8,35 @@ module.exports = {
   //MM-6
   create: async (user, body) => {
     const restaurant = user.restaurantId;
-    await sequelize.transaction(async (trx) => {
-      db.Menu.create({ ...body, restaurantId: restaurant }, { transaction: trx });
-    });
+    await db.Menu.create({ ...body, restaurantId: restaurant });
   },
   //MM-6
   update: async (user, id, body) => {
-    //check premssion to menu
-    await db.Menu.checkPermission(user, id);
-    // update
-    await sequelize.transaction(async (trx) => {
-      db.Menu.update(body, { where: { id }, transaction: trx });
-    });
+    console.log(user);
+    //TODO: upload thumbnail
+    await db.Menu.update(body, { where: { id, restaurantId: user.restaurantId } });
   },
   //MM-6
   delete: async (user, id) => {
-    await sequelize.transaction(async (trx) => {
-      await Promise.all([
-        //check premssion to menu
-        db.Menu.checkPermission(user, id),
-        //delete
-        db.Menu.destroy({ where: { id }, transaction: trx }),
-      ]);
-    });
+    await db.Menu.destroy({ where: { id, restaurantId: user.restaurantId } });
   },
   //MM-6
   getById: async (user, id) => {
     const result = await db.Menu.findOne({
-      attributes: ["id"],
+      attributes: { exclude: ["restaurantId"] },
       where: { id, restaurantId: user.restaurantId },
     });
-    if (!result) throw new Exception(statusCodes.ITEM_NOT_FOUND, "Not Found");
-    return { data: result };
+    return result;
   },
   //MM-6
   getAll: async (user, query) => {
     const { count, rows } = await db.Menu.findAndCountAll({
+      attributes: { exclude: ["restaurantId"] },
       where: { restaurantId: user.restaurantId, name: { [Op.like]: `%${query.q}%` } },
-      include: [{ attributes: { exclude: ["menuId"] } }],
       offset: Number(query.offset),
       limit: Number(query.limit),
     });
-    if (rows.length == 0) throw new Exception(statusCodes.ITEM_NOT_FOUND, "Not Found");
+
     return { totalCount: count, data: rows };
   },
 };

@@ -30,7 +30,7 @@ module.exports = {
     const { id } = req.params;
     const { user } = req;
     const result = await service.getById(user, id);
-    res.status(statusCodes.OK).send(result);
+    result ? res.status(statusCodes.OK).send(result) : res.sendStatus(statusCodes.ITEM_NOT_FOUND);
   },
 
   //MM-7

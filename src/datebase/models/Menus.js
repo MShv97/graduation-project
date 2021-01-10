@@ -1,4 +1,5 @@
 const { Model, DataTypes } = require("sequelize");
+const { statusCodes } = require("../../helpers");
 
 module.exports = (sequelize) => {
   class Menu extends Model {

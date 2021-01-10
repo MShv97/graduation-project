@@ -8,7 +8,12 @@ module.exports = {
   //MM-7
   create: async (user, body) => {
     await sequelize.transaction(async (trx) => {
-      await Promise.all([db.Menu.checkPermission(user, body.menuId), db.Category.create(body, { transaction: trx })]);
+      await Promise.all([
+        //check premssion to dish
+        db.Menu.checkPermission(user, body.menuId),
+        // create
+        db.Category.create(body, { transaction: trx }),
+      ]);
     });
   },
   //MM-7
@@ -36,6 +41,7 @@ module.exports = {
   //MM-7
   getById: async (user, id) => {
     const result = await db.Category.findOne({
+      attributes: { exclude: ["menuId"] },
       where: { id },
       include: [
         {
@@ -47,14 +53,14 @@ module.exports = {
       ],
     });
     if (!result) throw new Exception(statusCodes.ITEM_NOT_FOUND, "Not Found");
-    return { data: result };
+    return result;
   },
   //MM-7
   getAll: async (user, query) => {
     const { count, rows } = await db.Category.findAndCountAll({
+      attributes: { exclude: ["menuId"] },
       where: { menuId: query.menuId, name: { [Op.like]: `%${query.q}%` } },
       include: [
-        { attributes: { exclude: ["categoryId"] } },
         {
           required: true,
           attributes: [],
@@ -65,7 +71,6 @@ module.exports = {
       offset: Number(query.offset),
       limit: Number(query.limit),
     });
-    if (rows.length == 0) throw new Exception(statusCodes.ITEM_NOT_FOUND, "Not Found");
     return { totalCount: count, data: rows };
   },
 };
