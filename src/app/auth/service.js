@@ -1,4 +1,4 @@
-const db = require("../../datebase").models;
+const db = require("../../database").models;
 const { JWTGenerator } = require("../../helpers");
 const { compare, hash } = require("bcrypt");
 const { verify } = require("jsonwebtoken");

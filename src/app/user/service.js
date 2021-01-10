@@ -1,8 +1,8 @@
-const sequelize = require("../../datebase");
+const sequelize = require("../../database");
 const { statusCodes, mailSender } = require("../../helpers");
 const { Op } = require("sequelize");
 const { hash } = require("bcrypt");
-const { transaction } = require("../../datebase");
+const { transaction } = require("../../database");
 
 const db = sequelize.models;
 

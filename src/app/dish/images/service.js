@@ -1,4 +1,4 @@
-const db = require("../../../datebase").models;
+const db = require("../../../database").models;
 const { statusCodes } = require("../../../helpers");
 
 module.exports = {

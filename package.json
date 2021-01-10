@@ -6,7 +6,8 @@
   "scripts": {
     "format": "prettier --write .",
     "start": "node src/index.js",
-    "dev": "nodemon src/index.js"
+    "dev": "nodemon src/index.js",
+    "sync": "node src/database/sync.js"
   },
   "repository": {
     "type": "git",

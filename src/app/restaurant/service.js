@@ -1,5 +1,5 @@
 const { hash } = require("bcrypt");
-const sequelize = require("../../datebase");
+const sequelize = require("../../database");
 const { statusCodes } = require("../../helpers");
 const { Op } = require("sequelize");
 

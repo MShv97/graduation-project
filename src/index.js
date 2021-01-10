@@ -2,7 +2,7 @@ const express = require("express");
 require("dotenv").config();
 const helmet = require("helmet");
 const cors = require("cors");
-const db = require("./datebase");
+const db = require("./database");
 const { httpLogger } = require("./middlewares");
 const Exception = require("./middlewares/exception");
 
