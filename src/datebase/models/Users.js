@@ -12,7 +12,7 @@ module.exports = (sequelize) => {
       phone: { type: DataTypes.STRING(20) },
       birthdate: { type: DataTypes.DATE },
       avatar: { type: DataTypes.TEXT, allowNull: true },
-      role: { type: DataTypes.ENUM("admin", "accountant", "waiter", "chief", "author") },
+      role: { type: DataTypes.ENUM("admin", "accountant", "waiter", "chief", "author", "restaurant") },
     },
     {
       sequelize,

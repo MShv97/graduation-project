@@ -8,7 +8,6 @@ const router = require("express").Router();
  ******************/
 
 router.post("/login", joiValidator(validator.login), catchAsync(controller.login));
-router.post("/signup", joiValidator(validator.signup), catchAsync(controller.signup));
 router.post("/refresh-token", joiValidator(validator.refreshToken), catchAsync(controller.refreshToken));
 
 module.exports = router;

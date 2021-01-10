@@ -3,6 +3,7 @@ const router = require("express").Router();
 router.use("/auth", require("./auth/router"));
 router.use("/api/dish", require("./dish/router"));
 router.use("/api/user", require("./user/router"));
+router.use("/api/restaurant", require("./restaurant/router"));
 
 // const RestaurantRouter = require("./restaurant");
 // const MenuRouter = require("./menu");

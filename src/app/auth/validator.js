@@ -17,17 +17,4 @@ const refreshToken = Joi.object({
   }).required(),
 });
 
-const signup = Joi.object({
-  body: Joi.object({
-    restaurantId: Joi.number().required(),
-    firstName: Joi.string().required(),
-    lastName: Joi.string().required(),
-    email: Joi.string().email().required(),
-    phone: Joi.string().required(),
-    password: Joi.string().min(8).required(),
-    role: Joi.string().required(),
-    birthdate: Joi.date().required(),
-  }).required(),
-});
-
-module.exports = { login, signup, refreshToken };
+module.exports = { login, refreshToken };

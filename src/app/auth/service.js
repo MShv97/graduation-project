@@ -17,12 +17,6 @@ module.exports = {
 
     return { data };
   },
-
-  signup: async (body) => {
-    body.password = await hash(body.password, Number(process.env.BCRYPT_ROUNDS));
-    console.log(body);
-    await db.User.create(body);
-  },
   refreshToken: async (body) => {
     const { userId, role, restaurantId } = verify(body.refreshToken, process.env.JWT_REFRESH_SECRET);
     const payload = { userId, role, restaurantId };
