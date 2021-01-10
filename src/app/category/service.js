@@ -1,80 +1,76 @@
-import { CustomError } from "../../helpers";
-import { CategoryRepo } from "../repositories";
-import { Like } from "typeorm";
-import fs from "fs";
+const sequelize = require("../../datebase");
+const { statusCodes } = require("../../helpers");
+const { Op } = require("sequelize");
 
-// MM-7
-async function create(body: any, file: any) {
-  try {
-    const category = CategoryRepo.create();
-    category.name = body.name;
-    category.description = body.description;
-    category.menu = body.menuId;
-    category.thumpnail = file.path;
-    await CategoryRepo.save(category);
-    return "Success";
-  } catch (err) {
-    fs.unlinkSync(file.path);
-    if (err.code == "ER_NO_REFERENCED_ROW_2") throw new CustomError({ status: 404, message: "Menu was not found." });
-    throw err;
-  }
-}
-// MM-7
-async function read(menuId: number, page: number, size: number, q: string) {
-  try {
-    const result = await CategoryRepo.find({
-      where: { menu: menuId, name: Like(`%${q}%`) },
-      skip: page * size,
-      take: size,
+const db = sequelize.models;
+
+module.exports = {
+  //MM-7
+  create: async (user, body) => {
+    await sequelize.transaction(async (trx) => {
+      await Promise.all([
+        //check premssion to dish
+        db.Menu.checkPermission(user, body.menuId),
+        // create
+        db.Category.create(body, { transaction: trx }),
+      ]);
     });
-    return { categories: result };
-  } catch (err) {
-    throw err;
-  }
-}
-// MM-7
-async function update(currUser: any, body: any, file: any) {
-  try {
-    const category = await CategoryRepo.categoryPermission(currUser.restaurantId, body.categoryId);
-    if (body.name) category.name = body.name;
-    if (body.description) category.description = body.description;
-    if (file) {
-      fs.existsSync(category.thumpnail) && fs.unlinkSync(category.thumpnail);
-      category.thumpnail = file.path;
-    }
-    await CategoryRepo.save(category);
-    return "Success";
-  } catch (err) {
-    if (err.name == "EntityNotFound") throw new CustomError({ status: 404, message: "Category was not found." });
-    if (err.name == "UpdateValuesMissingError")
-      throw new CustomError({ status: 400, message: "Cannot perform update query because update values are not defined." });
-    throw err;
-  }
-}
-// MM-7
-async function del(currUser: any, categoryId: number) {
-  try {
-    const category = await CategoryRepo.categoryPermission(currUser.restaurantId, categoryId);
-    await CategoryRepo.delete(category.id);
-    fs.existsSync(category.thumpnail) && fs.unlinkSync(category.thumpnail);
-    return "Success";
-  } catch (err) {
-    if (err.name == "EntityNotFound") throw new CustomError({ status: 404, message: "Category was not found." });
-    throw err;
-  }
-}
-//MM-10
-async function deleteThumpnail(currUser: any, categoryId: number) {
-  try {
-    const category = await CategoryRepo.categoryPermission(currUser.restaurantId, categoryId);
-    await CategoryRepo.delete(category.id);
-    await CategoryRepo.update(categoryId, { thumpnail: null });
-    fs.existsSync(category.thumpnail) && fs.unlinkSync(category.thumpnail);
-    return "Success";
-  } catch (err) {
-    if (err.name == "EntityNotFound") throw new CustomError({ status: 404, message: "Category was not found." });
-    throw err;
-  }
-}
-
-export default { create, read, update, del, deleteThumpnail };
+  },
+  //MM-7
+  update: async (user, id, body) => {
+    await sequelize.transaction(async (trx) => {
+      await Promise.all([
+        //check premssion to category
+        db.Category.checkPermission(user, id),
+        // update
+        db.Category.update(body, { where: { id }, transaction: trx }),
+      ]);
+    });
+  },
+  //MM-7
+  delete: async (user, id) => {
+    await sequelize.transaction(async (trx) => {
+      await Promise.all([
+        //check premssion to category
+        db.Category.checkPermission(user, id),
+        //delete
+        db.Category.destroy({ where: { id }, transaction: trx }),
+      ]);
+    });
+  },
+  //MM-7
+  getById: async (user, id) => {
+    const result = await db.Category.findOne({
+      attributes: { exclude: ["menuId"] },
+      where: { id },
+      include: [
+        {
+          required: true,
+          attributes: [],
+          model: db.Menu,
+          where: { restaurantId: user.restaurantId },
+        },
+      ],
+    });
+    if (!result) throw new Exception(statusCodes.ITEM_NOT_FOUND, "Not Found");
+    return result;
+  },
+  //MM-7
+  getAll: async (user, query) => {
+    const { count, rows } = await db.Category.findAndCountAll({
+      attributes: { exclude: ["menuId"] },
+      where: { menuId: query.menuId, name: { [Op.like]: `%${query.q}%` } },
+      include: [
+        {
+          required: true,
+          attributes: [],
+          model: db.Menu,
+          where: { restaurantId: user.restaurantId },
+        },
+      ],
+      offset: Number(query.offset),
+      limit: Number(query.limit),
+    });
+    return { totalCount: count, data: rows };
+  },
+};

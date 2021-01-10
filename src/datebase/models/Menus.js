@@ -1,7 +1,16 @@
 const { Model, DataTypes } = require("sequelize");
+const { statusCodes } = require("../../helpers");
 
 module.exports = (sequelize) => {
-  class Menu extends Model {}
+  class Menu extends Model {
+    static async checkPermission(user, id) {
+      const Menu = await this.findOne({
+        attributes: ["id"],
+        where: { id, restaurantId: user.restaurantId },
+      });
+      if (!Menu) throw new Exception(statusCodes.ITEM_NOT_FOUND, "Not Found");
+    }
+  }
 
   Menu.init(
     {

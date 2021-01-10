@@ -7,10 +7,13 @@ const db = sequelize.models;
 module.exports = {
   //MM-8
   create: async (user, body, files) => {
-    //TODO
-    //check premssion to category
     await sequelize.transaction(async (trx) => {
-      const dish = await db.Dish.create(body, { transaction: trx });
+      const [dish] = await Promise.all([
+        db.Dish.create(body, { transaction: trx }),
+        //check premssion to category
+        db.Category.checkPermission(user, body.categoryId),
+      ]);
+
       if (files) {
         const images = files.map((val) => ({
           dishId: dish.id,
@@ -65,8 +68,7 @@ module.exports = {
         },
       ],
     });
-    if (!result) throw new Exception(statusCodes.ITEM_NOT_FOUND, "Not Found");
-    return { data: result };
+    return result;
   },
   //MM-16
   getAll: async (user, query) => {
@@ -83,8 +85,8 @@ module.exports = {
       ],
       offset: Number(query.offset),
       limit: Number(query.limit),
+      distinct: true,
     });
-    if (rows.length == 0) if (!result) throw new Exception(statusCodes.ITEM_NOT_FOUND, "Not Found");
     return { totalCount: count, data: rows };
   },
 };

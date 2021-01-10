@@ -1,67 +1,46 @@
-import { NextFunction, Request, Response } from "express";
-import { ResponseSender } from "../../helpers";
-import CategoryServices from "./service";
+const service = require("./service");
+const { statusCodes } = require("../../helpers");
 
-//MM-7
-async function create(req: Request, res: Response, next: NextFunction) {
-  try {
-    const { body, file } = req;
-    const results = await CategoryServices.create(body, file);
-    ResponseSender({ res: res, status: 200, response: results });
-  } catch (err) {
-    next(err);
-  }
-}
-//MM-7
-async function read(req: Request, res: Response, next: NextFunction) {
-  try {
-    const menuId = Number(req.query.menuId);
-    const page = Number(req.query.page) || 0;
-    const size = Number(req.query.size) || 8;
-    const q = req.query.q ? String(req.query.q) : "";
+module.exports = {
+  //MM-7
+  create: async (req, res) => {
+    const { user, body } = req;
+    const result = await service.create(user, body);
+    res.status(statusCodes.CREATED).send(result);
+  },
 
-    const results = await CategoryServices.read(menuId, page, size, q);
-    ResponseSender({ res: res, status: 200, response: results });
-  } catch (err) {
-    next(err);
-  }
-}
-//MM-7
-async function update(req: Request, res: Response, next: NextFunction) {
-  try {
-    const { currUser, body, file } = req;
-    const results = await CategoryServices.update(currUser, body, file);
-    ResponseSender({ res: res, status: 200, response: results });
-  } catch (err) {
-    next(err);
-  }
-}
-//MM-7
-async function del(req: Request, res: Response, next: NextFunction) {
-  try {
-    const { currUser } = req;
-    const categoryId = Number(req.params.categoryId);
-    const results = await CategoryServices.del(currUser, categoryId);
-    ResponseSender({ res: res, status: 200, response: results });
-  } catch (err) {
-    next(err);
-  }
-}
-//MM-10
-async function deleteThumpnail(req: Request, res: Response, next: NextFunction) {
-  try {
-    const { currUser } = req;
-    const categoryId = Number(req.params.categoryId);
-    const results = await CategoryServices.deleteThumpnail(currUser, categoryId);
-    ResponseSender({ res: res, status: 200, response: results });
-  } catch (err) {
-    next(err);
-  }
-}
-export default {
-  create,
-  read,
-  update,
-  del,
-  deleteThumpnail,
+  //MM-7
+  update: async (req, res) => {
+    const { id } = req.params;
+    const { user, body } = req;
+    const result = await service.update(user, id, body);
+    res.status(statusCodes.UPDATED).send(result);
+  },
+
+  //MM-7
+  delete: async (req, res) => {
+    const { id } = req.params;
+    const { user } = req;
+    await service.delete(user, id);
+    res.sendStatus(statusCodes.DELETED);
+  },
+
+  //MM-7
+  getById: async (req, res) => {
+    const { id } = req.params;
+    const { user } = req;
+    const result = await service.getById(user, id);
+    result ? res.status(statusCodes.OK).send(result) : res.sendStatus(statusCodes.ITEM_NOT_FOUND);
+  },
+
+  //MM-7
+  getAll: async (req, res) => {
+    const { user, query } = req;
+    const menuId = query.menuId;
+    const offset = query.offset || 0;
+    const limit = query.limit || 50;
+    const q = query.q ? query.q : "";
+    const result = await service.getAll(user, { menuId, offset, limit, q });
+    res.status(statusCodes.OK).send(result);
+  },
 };
