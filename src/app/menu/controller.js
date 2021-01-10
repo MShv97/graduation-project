@@ -1,58 +1,45 @@
-import { NextFunction, Request, Response } from "express";
-import { ResponseSender } from "../../helpers";
-import MenuServices from "./service";
+const service = require("./service");
+const { statusCodes } = require("../../helpers");
 
-//MM-6
-async function create(req: Request, res: Response, next: NextFunction) {
-  try {
-    const { currUser } = req;
-    const body = req.body;
-    const results = await MenuServices.create(currUser, body);
-    ResponseSender({ res: res, status: 200, response: results });
-  } catch (err) {
-    next(err);
-  }
-}
-//MM-6
-async function read(req: Request, res: Response, next: NextFunction) {
-  try {
-    const { currUser } = req;
-    const page = Number(req.query.page) || 0;
-    const size = Number(req.query.size) || 8;
-    const q = req.query.q ? String(req.query.q) : "";
+module.exports = {
+  //MM-8
+  create: async (req, res) => {
+    const { user, body } = req;
+    const result = await service.create(user, body);
+    res.status(statusCodes.CREATED).send(result);
+  },
 
-    const results = await MenuServices.read(currUser, page, size, q);
-    ResponseSender({ res: res, status: 200, response: results });
-  } catch (err) {
-    next(err);
-  }
-}
-//MM-6
-async function update(req: Request, res: Response, next: NextFunction) {
-  try {
-    const { currUser } = req;
-    const body = req.body;
-    const results = await MenuServices.update(currUser, body);
-    ResponseSender({ res: res, status: 200, response: results });
-  } catch (err) {
-    next(err);
-  }
-}
-//MM-6
-async function del(req: Request, res: Response, next: NextFunction) {
-  try {
-    const { currUser } = req;
-    const menuId = Number(req.params.menuId);
-    const results = await MenuServices.del(currUser, menuId);
-    ResponseSender({ res: res, status: 200, response: results });
-  } catch (err) {
-    next(err);
-  }
-}
+  //MM-8
+  update: async (req, res) => {
+    const { id } = req.params;
+    const { user, body } = req;
+    const result = await service.update(user, id, body);
+    res.status(statusCodes.UPDATED).send(result);
+  },
 
-export default {
-  create,
-  read,
-  update,
-  del,
+  //MM-8
+  delete: async (req, res) => {
+    const { id } = req.params;
+    const { user } = req;
+    await service.delete(user, id);
+    res.sendStatus(statusCodes.DELETED);
+  },
+
+  //MM-8
+  getById: async (req, res) => {
+    const { id } = req.params;
+    const { user } = req;
+    const result = await service.getById(user, id);
+    res.status(statusCodes.OK).send(result);
+  },
+
+  //MM-8
+  getAll: async (req, res) => {
+    const { user, query } = req;
+    const offset = query.offset || 0;
+    const limit = query.limit || 50;
+    const q = query.q ? query.q : "";
+    const result = await service.getAll(user, { offset, limit, q });
+    res.status(statusCodes.OK).send(result);
+  },
 };

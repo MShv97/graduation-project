@@ -1,58 +1,55 @@
-import { Like } from "typeorm";
-import { CustomError } from "../../helpers";
-import { MenuRepo } from "../repositories";
+const sequelize = require("../../datebase");
+const { statusCodes } = require("../../helpers");
+const { Op } = require("sequelize");
 
-//MM-6
-async function create(currUser: any, body: any) {
-  try {
-    const menu = MenuRepo.create();
-    menu.name = body.name;
-    menu.description = body.description;
-    menu.restaurant = currUser.restaurantId;
+const db = sequelize.models;
 
-    await MenuRepo.save(menu);
-    return "Success";
-  } catch (err) {
-    throw err;
-  }
-}
-//MM-6
-async function read(currUser: any, page: number, size: number, q: string) {
-  try {
-    const result = await MenuRepo.find({
-      where: { restaurant: currUser.restaurantId, name: Like(`%${q}%`) },
-      skip: page * size,
-      take: size,
+module.exports = {
+  //MM-6
+  create: async (user, body) => {
+    const restaurant = user.restaurantId;
+    await sequelize.transaction(async (trx) => {
+      db.Menu.create({ ...body, restaurantId: restaurant }, { transaction: trx });
     });
-    return { menus: result };
-  } catch (err) {
-    throw err;
-  }
-}
-//MM-6
-async function update(currUser: any, body: any) {
-  try {
-    const menu = await MenuRepo.menuPermission(currUser.restaurantId, body.menuId);
-    delete body.menuId;
-    await MenuRepo.update(menu.id, body);
-    return "Success";
-  } catch (err) {
-    if (err.name == "EntityNotFound") throw new CustomError({ status: 404, message: "Menu was not found." });
-    if (err.name == "UpdateValuesMissingError")
-      throw new CustomError({ status: 400, message: "Cannot perform update query because update values are not defined." });
-    throw err;
-  }
-}
-//MM-6
-async function del(currUser: any, menuId: number) {
-  try {
-    const menu = await MenuRepo.menuPermission(currUser.restaurantId, menuId);
-    await MenuRepo.delete(menu.id);
-    return "Success";
-  } catch (err) {
-    if (err.name == "EntityNotFound") throw new CustomError({ status: 404, message: "Menu was not found." });
-    throw err;
-  }
-}
-
-export default { create, read, update, del };
+  },
+  //MM-6
+  update: async (user, id, body) => {
+    //check premssion to menu
+    await db.Menu.checkPermission(user, id);
+    // update
+    await sequelize.transaction(async (trx) => {
+      db.Menu.update(body, { where: { id }, transaction: trx });
+    });
+  },
+  //MM-6
+  delete: async (user, id) => {
+    await sequelize.transaction(async (trx) => {
+      await Promise.all([
+        //check premssion to menu
+        db.Menu.checkPermission(user, id),
+        //delete
+        db.Menu.destroy({ where: { id }, transaction: trx }),
+      ]);
+    });
+  },
+  //MM-6
+  getById: async (user, id) => {
+    const result = await db.Menu.findOne({
+      attributes: ["id"],
+      where: { id, restaurantId: user.restaurantId },
+    });
+    if (!result) throw new Exception(statusCodes.ITEM_NOT_FOUND, "Not Found");
+    return { data: result };
+  },
+  //MM-6
+  getAll: async (user, query) => {
+    const { count, rows } = await db.Menu.findAndCountAll({
+      where: { restaurantId: user.restaurantId, name: { [Op.like]: `%${query.q}%` } },
+      include: [{ attributes: { exclude: ["menuId"] } }],
+      offset: Number(query.offset),
+      limit: Number(query.limit),
+    });
+    if (rows.length == 0) throw new Exception(statusCodes.ITEM_NOT_FOUND, "Not Found");
+    return { totalCount: count, data: rows };
+  },
+};

@@ -20,7 +20,6 @@ module.exports = {
 
   signup: async (body) => {
     body.password = await hash(body.password, Number(process.env.BCRYPT_ROUNDS));
-    console.log(body);
     await db.User.create(body);
   },
   refreshToken: async (body) => {
