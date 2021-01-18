@@ -8,7 +8,7 @@ const router = require("express").Router();
  **********************/
 
 //MM-18
-router.post("/invite", authorization(["admin", "manager", "author"]), joiValidator(validator.invite), catchAsync(controller.invite));
+router.post("/invite", authorization(["admin", "manager"]), joiValidator(validator.invite), catchAsync(controller.invite));
 //MM-19
 router.post("/signup", joiValidator(validator.signup), catchAsync(controller.signup));
 
