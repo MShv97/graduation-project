@@ -2,7 +2,6 @@ const sequelize = require("../../database");
 const { statusCodes, mailSender } = require("../../helpers");
 const { Op } = require("sequelize");
 const { hash } = require("bcrypt");
-const { transaction } = require("../../database");
 
 const db = sequelize.models;
 
@@ -13,7 +12,7 @@ module.exports = {
     let { role, to, subject, text, html } = body;
     await sequelize.transaction(async (trx) => {
       const invite = await db.Invite.create({ to, role, restaurantId: restaurant.id }, { transaction: trx });
-      html = `You have been invited to join "${restaurant.name}" team as "${role}".<br /><a href="https://www.mymenu.com/invite?${invite.token}">Click here to accepte.</a>`;
+      html = `You have been invited to join "${restaurant.name}" team as "${role}".<br /><a href="https://mymenusystem.herokuapp.com/invite?token=${invite.token}">Click here to accept.</a>`;
       await mailSender(to, subject, text, html);
     });
   },

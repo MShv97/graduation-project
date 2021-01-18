@@ -1,14 +1,14 @@
 const nodemailer = require("nodemailer");
 
 /**
- * Mail sender - sends emails useing 'nodemailer'
+ * Mail sender - sends emails using 'nodemailer'
  *
  * @param {String} to - receiver email
  * @param {String} subject - email subject
  * @param {String} text
  * @param {String} html
  *
- * @returns {void}
+ * @returns {Promise}
  */
 
 //MM-18

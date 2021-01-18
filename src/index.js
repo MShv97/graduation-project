@@ -8,7 +8,7 @@ const Exception = require("./middlewares/exception");
 
 const start = async () => {
   logger.info("Connecting to DB");
-  //await db.sync({ alter: true });
+  //await db.sync({ alter: true, force: true });
   logger.info("DB IS READY.");
 
   const router = require("./app/router");

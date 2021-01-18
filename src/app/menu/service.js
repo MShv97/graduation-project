@@ -12,7 +12,6 @@ module.exports = {
   },
   //MM-6
   update: async (user, id, body) => {
-    console.log(user);
     //TODO: upload thumbnail
     await db.Menu.update(body, { where: { id, restaurantId: user.restaurantId } });
   },
