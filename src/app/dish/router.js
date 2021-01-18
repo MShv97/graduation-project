@@ -1,6 +1,6 @@
 const controller = require("./controller");
 const validator = require("./validator");
-const { joiValidator, catchAsync, checkRoleMiddleware, authMiddleware, MulterStorage } = require("../../middlewares");
+const { joiValidator, catchAsync, authorization, MulterStorage } = require("../../middlewares");
 const router = require("express").Router();
 
 const images = require("./images/router");
@@ -10,15 +10,15 @@ const images = require("./images/router");
  **********************/
 
 //MM-8
-router.post("/", authMiddleware, checkRoleMiddleware(["admin"]), MulterStorage.array("images", 4), joiValidator(validator.create), catchAsync(controller.create));
+router.post("/", authorization(["admin", "manager", "author"]), MulterStorage.array("images", 4), joiValidator(validator.create), catchAsync(controller.create));
 
-router.patch("/:id", authMiddleware, checkRoleMiddleware(["admin"]), MulterStorage.array("images", 4), joiValidator(validator.update), catchAsync(controller.update));
+router.patch("/:id", authorization(["admin", "manager", "author"]), MulterStorage.array("images", 4), joiValidator(validator.update), catchAsync(controller.update));
 
-router.delete("/:id", authMiddleware, checkRoleMiddleware(["admin"]), joiValidator(validator.update), catchAsync(controller.delete));
+router.delete("/:id", authorization(["admin", "manager", "author"]), joiValidator(validator.update), catchAsync(controller.delete));
 
-router.get("/:id", authMiddleware, checkRoleMiddleware(["admin"]), joiValidator(validator.paramId), catchAsync(controller.getById));
+router.get("/:id", authorization(["admin", "manager", "author"]), joiValidator(validator.paramId), catchAsync(controller.getById));
 
-router.get("/", authMiddleware, checkRoleMiddleware(["admin"]), joiValidator(validator.getAll), catchAsync(controller.getAll));
+router.get("/", authorization(["admin", "manager", "author"]), joiValidator(validator.getAll), catchAsync(controller.getAll));
 
 /***********************************
  * @SubRouter /api/dish/:id/image  *

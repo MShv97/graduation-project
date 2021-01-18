@@ -1,6 +1,6 @@
 const { CustomError, statusCodes, DeletePublicError } = require("../helpers");
 class Exception extends Error {
-  constructor(status, msg) {
+  constructor(status, msg = "") {
     super(msg);
     this.errCode = status;
   }
@@ -25,11 +25,6 @@ class Exception extends Error {
       message = "Token has been expired.";
     }
 
-    if (err.name == "JsonWebTokenError") {
-      errCode = statusCodes.UNAUTHORIZED;
-      message = "Token is invalid.";
-    }
-
     if (err instanceof CustomError) {
       errCode = err.status;
       message = err.message;
@@ -39,7 +34,6 @@ class Exception extends Error {
       message = "Not found.";
     }
 
-    logger.error(err);
     res.status(errCode).send({ message });
   }
 }

@@ -19,7 +19,7 @@ module.exports = {
           email: body.email,
           phone: body.phone,
           password: body.password,
-          role: "restaurant",
+          role: "admin",
           birthdate: body.birthdate,
         },
         { transaction: trx }

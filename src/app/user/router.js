@@ -1,6 +1,6 @@
 const controller = require("./controller");
 const validator = require("./validator");
-const { joiValidator, catchAsync, checkRoleMiddleware, authMiddleware, MulterStorage } = require("../../middlewares");
+const { joiValidator, catchAsync, authorization, MulterStorage } = require("../../middlewares");
 const router = require("express").Router();
 
 /**********************
@@ -8,7 +8,7 @@ const router = require("express").Router();
  **********************/
 
 //MM-18
-router.post("/invite", authMiddleware, checkRoleMiddleware(["admin"]), joiValidator(validator.invite), catchAsync(controller.invite));
+router.post("/invite", authorization(["admin", "manager", "author"]), joiValidator(validator.invite), catchAsync(controller.invite));
 //MM-19
 router.post("/signup", joiValidator(validator.signup), catchAsync(controller.signup));
 
