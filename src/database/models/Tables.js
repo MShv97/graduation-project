@@ -5,12 +5,12 @@ module.exports = (sequelize) => {
 
   Table.init(
     {
-      code: { type: DataTypes.STRING },
+      code: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4 },
       QR: { type: DataTypes.TEXT, allowNull: true },
-      status: { type: DataTypes.ENUM("busy", "active", "out of service"), allowNull: true },
-      image: { type: DataTypes.TEXT, allowNull: true },
+      status: { type: DataTypes.ENUM("active", "busy", "out of service"), defaultValue: "active" },
     },
     {
+      indexes: [{ unique: true, fields: ["restaurant_id", "code"] }],
       sequelize,
       timestamps: false,
       underscored: true,

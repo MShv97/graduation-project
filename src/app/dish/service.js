@@ -10,7 +10,7 @@ module.exports = {
     await sequelize.transaction(async (trx) => {
       const [dish] = await Promise.all([
         db.Dish.create(body, { transaction: trx }),
-        //check premssion to category
+        //check permission to category
         db.Category.checkPermission(user, body.categoryId),
       ]);
 
@@ -25,7 +25,7 @@ module.exports = {
   },
   //MM-8
   update: async (user, id, body, files) => {
-    //check premssion to dish
+    //check permission to dish
     await db.Dish.checkPermission(user, id);
 
     let images = [];

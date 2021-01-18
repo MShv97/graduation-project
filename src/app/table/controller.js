@@ -1,58 +1,17 @@
-import { NextFunction, Request, Response } from "express";
-import { ResponseSender } from "../../helpers";
-import TableServices from "./service";
+const service = require("./service");
+const { statusCodes } = require("../../helpers");
 
-//MM-9
-async function create(req: Request, res: Response, next: NextFunction) {
-  try {
-    const { currUser } = req;
-    const body = req.body;
-    const results = await TableServices.create(currUser, body);
-    ResponseSender({ res: res, status: 200, response: results });
-  } catch (err) {
-    next(err);
-  }
-}
-//MM-9
-async function read(req: Request, res: Response, next: NextFunction) {
-  try {
-    const { currUser } = req;
-    const page = Number(req.query.page) || 0;
-    const size = Number(req.query.size) || 8;
-    const q = req.query.q ? String(req.query.q) : "";
-
-    const results = await TableServices.read(currUser, page, size, q);
-    ResponseSender({ res: res, status: 200, response: results });
-  } catch (err) {
-    next(err);
-  }
-}
-//MM-9
-async function update(req: Request, res: Response, next: NextFunction) {
-  try {
-    const { currUser } = req;
-    const body = req.body;
-    const results = await TableServices.update(currUser, body);
-    ResponseSender({ res: res, status: 200, response: results });
-  } catch (err) {
-    next(err);
-  }
-}
-//MM-9
-async function del(req: Request, res: Response, next: NextFunction) {
-  try {
-    const { currUser } = req;
-    const tableId = Number(req.params.tableId);
-    const results = await TableServices.del(currUser, tableId);
-    ResponseSender({ res: res, status: 200, response: results });
-  } catch (err) {
-    next(err);
-  }
-}
-
-export default {
-  create,
-  read,
-  update,
-  del,
+module.exports = {
+  //MM-22
+  create: async (req, res) => {
+    const { user, body } = req;
+    const result = await service.create(user, body);
+    res.status(statusCodes.CREATED).send(result);
+  },
+  //MM-22
+  menu: async (req, res) => {
+    const { query } = req;
+    const result = await service.menu(query);
+    res.status(statusCodes.OK).send(result);
+  },
 };

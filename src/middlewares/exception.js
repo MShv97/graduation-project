@@ -34,6 +34,7 @@ class Exception extends Error {
       message = "Not found.";
     }
 
+    console.log(err);
     res.status(errCode).send({ message });
   }
 }

@@ -1,57 +1,44 @@
-import { Like } from "typeorm";
-import { CustomError } from "../../helpers";
-import { TableRepo } from "../repositories";
+const sequelize = require("../../database");
+const { statusCodes } = require("../../helpers");
+const { Op } = require("sequelize");
+const QRCode = require("qrcode");
+const fs = require("fs");
 
-//MM-9
-async function create(currUser: any, body: any) {
-  try {
-    const table = TableRepo.create();
-    table.restaurant = currUser.restaurantId;
-    table.code = body.code;
+const db = sequelize.models;
 
-    await TableRepo.save(table);
-    return "Success";
-  } catch (err) {
-    throw err;
-  }
-}
-//MM-9
-async function read(currUser: any, page: number, size: number, q: string) {
-  try {
-    const result = await TableRepo.find({
-      where: { restaurant: currUser.restaurantId, code: Like(`%${q}%`) },
-      skip: page * size,
-      take: size,
+module.exports = {
+  //MM-22
+  create: async (user, body) => {
+    fs.mkdirSync("src/public/tables", { recursive: true });
+
+    const tables = [];
+    for (let i = 0; i < body.count; i++) {
+      const table = db.Table.build({ restaurantId: user.restaurantId }).get({ plain: true });
+
+      const path = `src/public/tables/${Date.now()}.svg`;
+      await QRCode.toFile(path, `https://mymenusystem.herokuapp.com/table?code=${table.code}`);
+      table.QR = path;
+
+      tables.push(table);
+    }
+
+    await db.Table.bulkCreate(tables);
+  },
+  //MM-22
+  menu: async (query) => {
+    const result = await db.Table.findAll({
+      require: true,
+      attributes: [],
+      where: { code: query.code },
+      include: [
+        {
+          attributes: ["id"],
+          model: db.Restaurant,
+          include: [{ attributes: { exclude: ["restaurantId"] }, model: db.Menu }],
+        },
+      ],
     });
-    return { tables: result };
-  } catch (err) {
-    throw err;
-  }
-}
-//MM-9
-async function update(currUser: any, body: any) {
-  try {
-    const table = await TableRepo.tablePermission(currUser.restaurantId, body.tableId);
-    delete body.tableId;
-    await TableRepo.update(table.id, body);
-    return "Success";
-  } catch (err) {
-    if (err.name == "EntityNotFound") throw new CustomError({ status: 404, message: "Table was not found." });
-    if (err.name == "UpdateValuesMissingError")
-      throw new CustomError({ status: 400, message: "Cannot perform update query because update values are not defined." });
-    throw err;
-  }
-}
-//MM-9
-async function del(currUser: any, tableId: number) {
-  try {
-    const table = await TableRepo.tablePermission(currUser.restaurantId, tableId);
-    await TableRepo.delete(table.id);
-    return "Success";
-  } catch (err) {
-    if (err.name == "EntityNotFound") throw new CustomError({ status: 404, message: "Table was not found." });
-    throw err;
-  }
-}
 
-export default { create, read, update, del };
+    return { data: result[0].Restaurant.Menus };
+  },
+};
