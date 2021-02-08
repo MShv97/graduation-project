@@ -1,3 +1,4 @@
+const argv = require("args-parser")(process.argv);
 const db = require("./index");
 
-db.sync({ force: true, alter: true });
+db.sync({ logging: true, ..._.pick(argv, ["alter", "force"]) });

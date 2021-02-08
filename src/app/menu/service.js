@@ -23,7 +23,6 @@ module.exports = {
   getById: async (user, id) => {
     const result = await db.Menu.findOne({
       attributes: { exclude: ["restaurantId"] },
-      where: { id, restaurantId: user.restaurantId },
     });
     return result;
   },
@@ -31,7 +30,7 @@ module.exports = {
   getAll: async (user, query) => {
     const { count, rows } = await db.Menu.findAndCountAll({
       attributes: { exclude: ["restaurantId"] },
-      where: { restaurantId: user.restaurantId, name: { [Op.like]: `%${query.q}%` } },
+      where: { name: { [Op.like]: `%${query.q}%` } },
       offset: Number(query.offset),
       limit: Number(query.limit),
     });

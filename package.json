@@ -7,7 +7,8 @@
     "format": "prettier --write .",
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
-    "sync": "node src/database/sync.js"
+    "sync": "node src/database/sync.js alter",
+    "force": "node src/database/sync.js force alter"
   },
   "repository": {
     "type": "git",
@@ -20,6 +21,7 @@
   },
   "homepage": "https://github.com/MShv97/graduation-project#readme",
   "dependencies": {
+    "args-parser": "^1.1.0",
     "bcrypt": "^5.0.0",
     "chalk": "^4.1.0",
     "cors": "^2.8.5",
@@ -27,6 +29,7 @@
     "helmet": "^4.2.0",
     "joi": "^17.3.0",
     "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.20",
     "moment": "^2.29.1",
     "multer": "^1.4.2",
     "mysql2": "^2.2.5",

@@ -43,14 +43,6 @@ module.exports = {
     const result = await db.Category.findOne({
       attributes: { exclude: ["menuId"] },
       where: { id },
-      include: [
-        {
-          required: true,
-          attributes: [],
-          model: db.Menu,
-          where: { restaurantId: user.restaurantId },
-        },
-      ],
     });
     if (!result) throw new Exception(statusCodes.ITEM_NOT_FOUND, "Not Found");
     return result;
@@ -60,14 +52,6 @@ module.exports = {
     const { count, rows } = await db.Category.findAndCountAll({
       attributes: { exclude: ["menuId"] },
       where: { menuId: query.menuId, name: { [Op.like]: `%${query.q}%` } },
-      include: [
-        {
-          required: true,
-          attributes: [],
-          model: db.Menu,
-          where: { restaurantId: user.restaurantId },
-        },
-      ],
       offset: Number(query.offset),
       limit: Number(query.limit),
     });

@@ -14,8 +14,8 @@ router.patch("/:id", authorization(["admin", "manager", "author"]), joiValidator
 
 router.delete("/:id", authorization(["admin", "manager", "author"]), joiValidator(validator.paramId), catchAsync(controller.delete));
 
-router.get("/:id", authorization(["admin", "manager", "author"]), joiValidator(validator.paramId), catchAsync(controller.getById));
+router.get("/:id", joiValidator(validator.paramId), catchAsync(controller.getById));
 
-router.get("/", authorization(["admin", "manager", "author"]), joiValidator(validator.getAll), catchAsync(controller.getAll));
+router.get("/", joiValidator(validator.getAll), catchAsync(controller.getAll));
 
 module.exports = router;

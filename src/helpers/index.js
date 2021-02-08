@@ -6,5 +6,16 @@ const statusCodes = require("./status-codes");
 const JWTGenerator = require("./jwt-generator");
 const commonValidators = require("./common/validator");
 const mailSender = require("./mail-sender");
+const _ = require("lodash");
+global._ = _;
 
-module.exports = { CustomError, ResponseSender, logger, DeletePublicError, statusCodes, JWTGenerator, commonValidators, mailSender };
+module.exports = {
+  CustomError,
+  ResponseSender,
+  logger,
+  DeletePublicError,
+  statusCodes,
+  JWTGenerator,
+  commonValidators,
+  mailSender,
+};

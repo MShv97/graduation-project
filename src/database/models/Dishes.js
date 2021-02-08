@@ -41,6 +41,8 @@ module.exports = (sequelize) => {
 
   Dish.associate = (models) => {
     Dish.belongsTo(models.Category, { foreignKey: { name: "categoryId", allowNull: false } });
+    Dish.belongsTo(models.Restaurant, { foreignKey: { name: "restaurantId", allowNull: false } });
+
     Dish.hasMany(models.Order, { foreignKey: { name: "dishId", allowNull: false } });
     Dish.hasMany(models.DishImage, { as: "images", foreignKey: { name: "dishId", allowNull: false } });
   };

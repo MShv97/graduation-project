@@ -23,6 +23,7 @@ module.exports = (sequelize) => {
     Restaurant.hasMany(models.RestaurantsSubscription, { foreignKey: { name: "restaurantId", allowNull: false } });
     Restaurant.hasMany(models.User, { foreignKey: { name: "restaurantId", allowNull: false } });
     Restaurant.hasMany(models.Invite, { foreignKey: { name: "restaurantId", allowNull: false } });
+    Restaurant.hasMany(models.Dish, { foreignKey: { name: "restaurantId", allowNull: false } });
   };
 
   return Restaurant;

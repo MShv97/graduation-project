@@ -58,15 +58,7 @@ module.exports = {
   getById: async (user, id) => {
     const result = await db.Dish.findOne({
       where: { id },
-      include: [
-        { attributes: { exclude: ["dishId"] }, model: db.DishImage, as: "images" },
-        {
-          required: true,
-          attributes: [],
-          model: db.Category,
-          include: [{ attributes: [], model: db.Menu, where: { restaurantId: user.restaurantId } }],
-        },
-      ],
+      include: [{ attributes: { exclude: ["dishId"] }, model: db.DishImage, as: "images" }],
     });
     return result;
   },
@@ -74,15 +66,7 @@ module.exports = {
   getAll: async (user, query) => {
     const { count, rows } = await db.Dish.findAndCountAll({
       where: { categoryId: query.categoryId, name: { [Op.like]: `%${query.q}%` } },
-      include: [
-        { attributes: { exclude: ["dishId"] }, model: db.DishImage, as: "images" },
-        {
-          required: true,
-          attributes: [],
-          model: db.Category,
-          include: [{ attributes: [], model: db.Menu, where: { restaurantId: user.restaurantId } }],
-        },
-      ],
+      include: [{ attributes: { exclude: ["dishId"] }, model: db.DishImage, as: "images" }],
       offset: Number(query.offset),
       limit: Number(query.limit),
       distinct: true,
