@@ -1,7 +1,11 @@
 const { Model, DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
-  class Subscription extends Model {}
+  class Subscription extends Model {
+    static associate(models) {
+      this.hasMany(models.RestaurantsSubscription, { foreignKey: { name: "subscriptionId", allowNull: false } });
+    }
+  }
 
   Subscription.init(
     {
@@ -15,10 +19,6 @@ module.exports = (sequelize) => {
       underscored: true,
     }
   );
-
-  Subscription.associate = (models) => {
-    Subscription.hasMany(models.RestaurantsSubscription, { foreignKey: { name: "subscriptionId", allowNull: false } });
-  };
 
   return Subscription;
 };

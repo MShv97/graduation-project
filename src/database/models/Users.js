@@ -1,18 +1,24 @@
 const { Model, DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
-  class User extends Model {}
+  class User extends Model {
+    static ROLE = ["admin", "manager", "author", "chef", "accountant", "waiter"];
+
+    static associate(models) {
+      this.belongsTo(models.Restaurant, { foreignKey: { name: "restaurantId", allowNull: false } });
+    }
+  }
 
   User.init(
     {
       firstName: { type: DataTypes.STRING(40) },
       lastName: { type: DataTypes.STRING(40) },
-      email: { type: DataTypes.STRING, unique: true },
+      email: { type: DataTypes.STRING, unique: "user_email" },
       password: { type: DataTypes.TEXT },
       phone: { type: DataTypes.STRING(20) },
       birthdate: { type: DataTypes.DATE },
       avatar: { type: DataTypes.TEXT, allowNull: true },
-      role: { type: DataTypes.ENUM("admin", "manager", "author", "chef", "accountant", "waiter") },
+      role: { type: DataTypes.ENUM(User.ROLE) },
     },
     {
       sequelize,
@@ -20,10 +26,6 @@ module.exports = (sequelize) => {
       underscored: true,
     }
   );
-
-  User.associate = (models) => {
-    User.belongsTo(models.Restaurant, { foreignKey: { name: "restaurantId", allowNull: false } });
-  };
 
   return User;
 };

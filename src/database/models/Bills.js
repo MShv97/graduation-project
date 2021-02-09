@@ -1,7 +1,11 @@
 const { Model, DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
-  class Bill extends Model {}
+  class Bill extends Model {
+    static associate(models) {
+      // Bill.hasOne(models.Client, { foreignKey: "clientId" });
+    }
+  }
 
   Bill.init(
     {
@@ -13,10 +17,6 @@ module.exports = (sequelize) => {
       underscored: true,
     }
   );
-
-  Bill.associate = (models) => {
-    // Bill.hasOne(models.Client, { foreignKey: "clientId" });
-  };
 
   return Bill;
 };

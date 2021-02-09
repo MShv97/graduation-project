@@ -1,14 +1,19 @@
 const { Model, DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
-  class RestaurantsSubscription extends Model {}
+  class RestaurantsSubscription extends Model {
+    static STATUS = ["pending"];
+
+    static associate(models) {
+      this.belongsTo(models.Subscription, { foreignKey: { name: "subscriptionId", allowNull: false } });
+      this.belongsTo(models.Restaurant, { foreignKey: { name: "restaurantId", allowNull: false } });
+      this.belongsTo(models.PaymentMethod, { foreignKey: { name: "paymentMethodId", allowNull: false } });
+    }
+  }
 
   RestaurantsSubscription.init(
     {
-      status: { type: DataTypes.ENUM("pending") },
-      address: { type: DataTypes.STRING },
-      logo: { type: DataTypes.TEXT, allowNull: true },
-      image: { type: DataTypes.TEXT, allowNull: true },
+      status: { type: DataTypes.ENUM(RestaurantsSubscription.STATUS) },
     },
     {
       sequelize,
@@ -16,12 +21,6 @@ module.exports = (sequelize) => {
       underscored: true,
     }
   );
-
-  RestaurantsSubscription.associate = (models) => {
-    RestaurantsSubscription.belongsTo(models.Subscription, { foreignKey: { name: "subscriptionId", allowNull: false } });
-    RestaurantsSubscription.belongsTo(models.Restaurant, { foreignKey: { name: "restaurantId", allowNull: false } });
-    RestaurantsSubscription.belongsTo(models.PaymentMethod, { foreignKey: { name: "paymentMethodId", allowNull: false } });
-  };
 
   return RestaurantsSubscription;
 };

@@ -8,7 +8,8 @@
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
     "sync": "node src/database/sync.js alter",
-    "force": "node src/database/sync.js force alter"
+    "force": "node src/database/sync.js force alter",
+    "seed": "npx sequelize-cli db:seed:all"
   },
   "repository": {
     "type": "git",

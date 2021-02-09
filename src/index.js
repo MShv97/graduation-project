@@ -1,5 +1,5 @@
+require("dotenv").config();
 const express = require("express");
-process.env.NODE_ENV !== "production" && require("dotenv").config();
 const helmet = require("helmet");
 const cors = require("cors");
 const db = require("./database");
@@ -8,7 +8,7 @@ const Exception = require("./middlewares/exception");
 
 const start = async () => {
   logger.info("Connecting to DB");
-  await db.sync();
+  await db.authenticate();
   logger.info("DB IS READY.");
 
   const router = require("./app/router");

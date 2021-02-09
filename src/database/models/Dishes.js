@@ -3,6 +3,16 @@ const { statusCodes } = require("../../helpers");
 
 module.exports = (sequelize) => {
   class Dish extends Model {
+    static STATUS = ["active", "disabled"];
+
+    static associate(models) {
+      this.belongsTo(models.Category, { foreignKey: { name: "categoryId", allowNull: false } });
+      this.belongsTo(models.Restaurant, { foreignKey: { name: "restaurantId", allowNull: false } });
+
+      this.hasMany(models.Order, { foreignKey: { name: "dishId", allowNull: false } });
+      this.hasMany(models.DishImage, { as: "images", foreignKey: { name: "dishId", allowNull: false } });
+    }
+
     static async checkPermission(user, id) {
       const db = sequelize.models;
       const dish = await this.findOne({
@@ -28,7 +38,7 @@ module.exports = (sequelize) => {
       code: { type: DataTypes.STRING(40) },
       price: { type: DataTypes.FLOAT, allowNull: false },
       discount: { type: DataTypes.FLOAT, defaultValue: 0 },
-      status: { type: DataTypes.ENUM("active", "disabled"), defaultValue: "active" },
+      status: { type: DataTypes.ENUM(Dish.STATUS), defaultValue: "active" },
       allergies: { type: DataTypes.TEXT, defaultValue: "" },
       calories: { type: DataTypes.FLOAT },
     },
@@ -38,14 +48,6 @@ module.exports = (sequelize) => {
       underscored: true,
     }
   );
-
-  Dish.associate = (models) => {
-    Dish.belongsTo(models.Category, { foreignKey: { name: "categoryId", allowNull: false } });
-    Dish.belongsTo(models.Restaurant, { foreignKey: { name: "restaurantId", allowNull: false } });
-
-    Dish.hasMany(models.Order, { foreignKey: { name: "dishId", allowNull: false } });
-    Dish.hasMany(models.DishImage, { as: "images", foreignKey: { name: "dishId", allowNull: false } });
-  };
 
   return Dish;
 };
