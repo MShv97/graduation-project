@@ -150,12 +150,15 @@ module.exports = {
       },
     ];
 
+    const subscriptions = [{ status: "active", restaurant_id: 1, subscription_id: 1, payment_method_id: 1 }];
+
     await queryInterface.bulkInsert("restaurants", restaurant);
     await queryInterface.bulkInsert("users", users);
     await queryInterface.bulkInsert("menus", menus);
     await queryInterface.bulkInsert("tables", tables);
     await queryInterface.bulkInsert("categories", categories);
     await queryInterface.bulkInsert("dishes", dishes);
+    await queryInterface.bulkInsert("restaurants_subscriptions", subscriptions);
   },
 
   down: async (queryInterface, Sequelize) => {

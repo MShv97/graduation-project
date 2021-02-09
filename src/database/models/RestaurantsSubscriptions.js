@@ -2,7 +2,7 @@ const { Model, DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
   class RestaurantsSubscription extends Model {
-    static STATUS = ["pending"];
+    static STATUS = ["pending", "active"];
 
     static associate(models) {
       this.belongsTo(models.Subscription, { foreignKey: { name: "subscriptionId", allowNull: false } });
@@ -13,7 +13,7 @@ module.exports = (sequelize) => {
 
   RestaurantsSubscription.init(
     {
-      status: { type: DataTypes.ENUM(RestaurantsSubscription.STATUS) },
+      status: { type: DataTypes.ENUM(RestaurantsSubscription.STATUS), defaultValue: "pending" },
     },
     {
       sequelize,

@@ -9,7 +9,16 @@ module.exports = {
         tables: 15,
       },
     ];
+
+    const paymentMethods = [
+      {
+        id: 1,
+        name: "PayPal",
+      },
+    ];
+
     await queryInterface.bulkInsert("subscriptions", subscriptions);
+    await queryInterface.bulkInsert("payment_methods", paymentMethods);
   },
 
   down: async (queryInterface, Sequelize) => {
