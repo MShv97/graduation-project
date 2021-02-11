@@ -28,19 +28,19 @@ module.exports = {
   //MM-7
   getById: async (req, res) => {
     const { id } = req.params;
-    const { user } = req;
-    const result = await service.getById(user, id);
+    const { user, query } = req;
+    const limit = query.limit || 10;
+    const result = await service.getById(user, id, { limit });
     result ? res.status(statusCodes.OK).send(result) : res.sendStatus(statusCodes.ITEM_NOT_FOUND);
   },
 
   //MM-7
   getAll: async (req, res) => {
     const { user, query } = req;
-    const menuId = query.menuId;
-    const offset = query.offset || 0;
-    const limit = query.limit || 50;
-    const q = query.q ? query.q : "";
-    const result = await service.getAll(user, { menuId, offset, limit, q });
+    query.offset = query.offset || 0;
+    query.limit = query.limit || 10;
+    query.q = query.q ? query.q : "";
+    const result = await service.getAll(user, query);
     res.status(statusCodes.OK).send(result);
   },
 };

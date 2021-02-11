@@ -11,6 +11,7 @@ module.exports = {
         address: "Hama-AlBaath",
       },
     ];
+
     // password: domPassword
     const users = [
       {
@@ -78,8 +79,9 @@ module.exports = {
     const menus = [
       {
         id: 1,
-        name: "Main menu",
-        description: "Our main menu",
+        title: "Main menu",
+        ar_title: "القائمة الرئيسية",
+        currency: "SYR",
         restaurant_id: 1,
       },
     ];
@@ -90,14 +92,16 @@ module.exports = {
     const categories = [
       {
         id: 1,
-        name: "Sandwiches",
-        description: "very delicious sandwiches",
+        title: "Sandwiches",
+        ar_title: "سادندويتش",
+        icon_id: 1,
         menu_id: 1,
       },
       {
         id: 2,
-        name: "Meals",
-        description: "very delicious meals",
+        title: "Meals",
+        ar_title: "وجبات",
+        icon_id: 1,
         menu_id: 1,
       },
     ];
@@ -105,45 +109,56 @@ module.exports = {
     const dishes = [
       {
         name: "Santa Fe",
+        ar_name: "سانتافيه",
         description: "These Santa Fe Sandwiches are a quick and easy way to make your next lunch hour something special.",
+        ar_description: "سريعة التحضير",
         code: "santaFe01",
         price: 3000,
         discount: 0,
         status: "active",
+        preparation_time: 15,
         calories: 35,
         restaurant_id: 1,
         category_id: 1,
       },
       {
         name: "Zinger",
-        description:
-          "Zinger sandwich has chicken layer ,egg layer and a veggie mayo layer..that makes a wholesome meal for breakfast.",
+        ar_name: "زنجر",
+        description: "Zinger sandwich has chicken layer ,egg layer and a veggie mayo layer..that makes a wholesome meal for breakfast.",
+        ar_description: "طبقة دجاج وطبقة بيض وطبقة مايونيز",
         code: "zinger01",
         price: 3000,
         discount: 0,
         status: "active",
+        preparation_time: 15,
         calories: 45,
         restaurant_id: 1,
         category_id: 1,
       },
       {
         name: "Chitza",
+        ar_name: "تشيتزا",
         description: "Chicken + Pizza.",
+        ar_description: "نص بيتزا ونص جاج",
         code: "chitza01",
         price: 4500,
         discount: 0,
         status: "active",
+        preparation_time: 20,
         calories: 100,
         restaurant_id: 1,
         category_id: 2,
       },
       {
         name: "Grand Fajita",
+        ar_name: "غراند فاهيتا",
         description: "Grilled meat served as a taco on a flour or corn tortilla.",
+        ar_description: "لحم مشوي مثل التاكو",
         code: "fajita01",
         price: 4500,
         discount: 0,
         status: "active",
+        preparation_time: 10,
         calories: 100,
         restaurant_id: 1,
         category_id: 2,
@@ -168,5 +183,6 @@ module.exports = {
     await queryInterface.bulkDelete("tables");
     await queryInterface.bulkDelete("categories");
     await queryInterface.bulkDelete("dishes");
+    await queryInterface.bulkDelete("restaurants_subscriptions");
   },
 };

@@ -8,6 +8,7 @@ module.exports = (sequelize) => {
     static associate(models) {
       this.belongsTo(models.Category, { foreignKey: { name: "categoryId", allowNull: false } });
       this.belongsTo(models.Restaurant, { foreignKey: { name: "restaurantId", allowNull: false } });
+      this.belongsToMany(models.Dish, { through: "Dish_Allergy", as: "allergies", timestamps: false });
 
       this.hasMany(models.Order, { foreignKey: { name: "dishId", allowNull: false } });
       this.hasMany(models.DishImage, { as: "images", foreignKey: { name: "dishId", allowNull: false } });
@@ -34,13 +35,15 @@ module.exports = (sequelize) => {
   Dish.init(
     {
       name: { type: DataTypes.STRING(100), allowNull: false },
+      arName: { type: DataTypes.STRING(100), allowNull: false },
       description: { type: DataTypes.TEXT, defaultValue: "" },
+      arDescription: { type: DataTypes.TEXT, defaultValue: "" },
       code: { type: DataTypes.STRING(40) },
       price: { type: DataTypes.FLOAT, allowNull: false },
       discount: { type: DataTypes.FLOAT, defaultValue: 0 },
       status: { type: DataTypes.ENUM(Dish.STATUS), defaultValue: "active" },
-      calories: { type: DataTypes.FLOAT },
-      PreparationTime: { type: DataTypes.FLOAT },
+      calories: { type: DataTypes.INTEGER },
+      PreparationTime: { type: DataTypes.INTEGER },
     },
     {
       sequelize,
@@ -48,16 +51,6 @@ module.exports = (sequelize) => {
       underscored: true,
     }
   );
-  Dish.associate = (models) => {
-    Dish.belongsToMany(models.Alergy, { foreignKey: { name: "dishId", allowNull: false } });
-  };
 
   return Dish;
 };
-//MM-10
-//Listener to delete dish images from local storage before deleting dish
-//Dish images is being deleted with cascade option
-// @BeforeRemove()
-// DeleteImagesFiles() {
-//   for (const image of this.images) fs.existsSync(image.path) && fs.unlinkSync(image.path);
-// }

@@ -7,7 +7,7 @@ module.exports = {
   create: Joi.object({
     body: Joi.object({
       title: Joi.string().required(),
-      numberOfTables: Joi.number().required(),
+      arTitle: Joi.string().required(),
       currency: Joi.string().required(),
     }).required(),
   }),
@@ -19,6 +19,7 @@ module.exports = {
     }).required(),
     body: Joi.object({
       title: Joi.string(),
+      arTitle: Joi.string(),
       currency: Joi.string(),
     }).required(),
   }),

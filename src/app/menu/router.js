@@ -14,8 +14,10 @@ router.patch("/:id", authorization(["admin", "manager", "author"]), MulterStorag
 
 router.delete("/:id", authorization(["admin", "manager", "author"]), joiValidator(validator.paramId), catchAsync(controller.delete));
 
-router.get("/:id", joiValidator(validator.paramId), catchAsync(controller.getById));
+router.delete("/:id/image", authorization(["admin", "manager", "author"]), joiValidator(validator.paramId), catchAsync(controller.deleteImage));
 
-router.get("/", joiValidator(validator.getAll), catchAsync(controller.getAll));
+router.get("/:id", authorization(["any"]), joiValidator(validator.paramId), catchAsync(controller.getById));
+
+router.get("/", authorization(["any"]), joiValidator(validator.getAll), catchAsync(controller.getAll));
 
 module.exports = router;

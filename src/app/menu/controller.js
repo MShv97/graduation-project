@@ -24,6 +24,13 @@ module.exports = {
     await service.delete(user, id);
     res.sendStatus(statusCodes.DELETED);
   },
+  //MM-8
+  deleteImage: async (req, res) => {
+    const { id } = req.params;
+    const { user } = req;
+    await service.deleteImage(user, id);
+    res.sendStatus(statusCodes.DELETED);
+  },
 
   //MM-8
   getById: async (req, res) => {

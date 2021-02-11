@@ -20,10 +20,10 @@ module.exports = (sequelize) => {
       avatar: { type: DataTypes.TEXT, allowNull: true },
       role: { type: DataTypes.ENUM(User.ROLE) },
       address: { type: DataTypes.TEXT },
+      verified: { type: DataTypes.BOOLEAN },
     },
     {
       sequelize,
-      timestamps: false,
       underscored: true,
     }
   );

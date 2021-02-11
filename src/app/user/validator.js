@@ -23,7 +23,7 @@ module.exports = {
       phone: Joi.string().required(),
       password: Joi.string().min(8).required(),
       birthdate: Joi.date().required(),
-      address: Joi.string().require(),
+      address: Joi.string().required(),
     }).required(),
   }),
 };

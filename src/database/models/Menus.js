@@ -3,6 +3,11 @@ const { statusCodes } = require("../../helpers");
 
 module.exports = (sequelize) => {
   class Menu extends Model {
+    static associate(models) {
+      this.belongsTo(models.Restaurant, { foreignKey: { name: "restaurantId", allowNull: false } });
+      this.hasMany(models.Category, { foreignKey: { name: "menuId", allowNull: false } });
+    }
+
     static async checkPermission(user, id) {
       const Menu = await this.findOne({
         attributes: ["id"],
@@ -14,10 +19,10 @@ module.exports = (sequelize) => {
 
   Menu.init(
     {
-      title: { type: DataTypes.STRING(100) },
-      numberOfTables: { type: DataTypes.INTEGER },
-      currency: { type: DataTypes.STRING },
-      image: { type: DataTypes.TEXT, allowNull: true },
+      title: { type: DataTypes.STRING(100), allowNull: false },
+      arTitle: { type: DataTypes.STRING(100), allowNull: false },
+      currency: { type: DataTypes.STRING(10), allowNull: false },
+      image: { type: DataTypes.TEXT },
     },
     {
       sequelize,
@@ -25,11 +30,6 @@ module.exports = (sequelize) => {
       underscored: true,
     }
   );
-
-  Menu.associate = (models) => {
-    Menu.belongsTo(models.Restaurant, { foreignKey: { name: "restaurantId", allowNull: false } });
-    Menu.hasMany(models.Category, { foreignKey: { name: "menuId", allowNull: false } });
-  };
 
   return Menu;
 };

@@ -4,6 +4,7 @@ const { statusCodes } = require("../helpers");
 function checkRoles(roles, role) {
   // check if user has any of the given roles
   if (role == "admin") return true;
+  if (roles.includes("any")) return true;
   if (roles.includes(role)) return true;
   return false;
 }
