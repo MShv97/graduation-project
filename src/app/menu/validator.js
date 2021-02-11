@@ -6,8 +6,9 @@ module.exports = {
   //MM-6
   create: Joi.object({
     body: Joi.object({
-      name: Joi.string().required(),
-      description: Joi.string().required(),
+      title: Joi.string().required(),
+      numberOfTables: Joi.number().required(),
+      currency: Joi.string().required(),
     }).required(),
   }),
 
@@ -17,8 +18,8 @@ module.exports = {
       id: Joi.number().required(),
     }).required(),
     body: Joi.object({
-      name: Joi.string(),
-      description: Joi.string(),
+      title: Joi.string(),
+      currency: Joi.string(),
     }).required(),
   }),
 };

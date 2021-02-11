@@ -9,7 +9,6 @@ module.exports = {
   create: async (user, body) => {
     await sequelize.transaction(async (trx) => {
       await Promise.all([
-        //check premssion to dish
         db.Menu.checkPermission(user, body.menuId),
         // create
         db.Category.create(body, { transaction: trx }),

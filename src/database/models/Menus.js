@@ -14,9 +14,10 @@ module.exports = (sequelize) => {
 
   Menu.init(
     {
-      name: { type: DataTypes.STRING(100) },
-      description: { type: DataTypes.TEXT },
-      thumpnail: { type: DataTypes.TEXT, nullable: true },
+      title: { type: DataTypes.STRING(100) },
+      numberOfTables: { type: DataTypes.INTEGER },
+      currency: { type: DataTypes.STRING },
+      image: { type: DataTypes.TEXT, allowNull: true },
     },
     {
       sequelize,

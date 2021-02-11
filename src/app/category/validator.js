@@ -8,7 +8,7 @@ module.exports = {
     body: Joi.object({
       menuId: Joi.number().required(),
       name: Joi.string().required(),
-      description: Joi.string().required(),
+      icon: Joi.string().required(),
     }).required(),
   }),
   //MM-7
@@ -18,7 +18,8 @@ module.exports = {
     }).required(),
     body: Joi.object({
       name: Joi.string(),
-      description: Joi.string(),
+      status: Joi.string(),
+      icon: Joi.string().required(),
     }).required(),
   }),
   // MM-7

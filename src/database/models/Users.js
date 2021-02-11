@@ -19,6 +19,7 @@ module.exports = (sequelize) => {
       birthdate: { type: DataTypes.DATE },
       avatar: { type: DataTypes.TEXT, allowNull: true },
       role: { type: DataTypes.ENUM(User.ROLE) },
+      address: { type: DataTypes.TEXT },
     },
     {
       sequelize,

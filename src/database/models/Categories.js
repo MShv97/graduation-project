@@ -3,6 +3,7 @@ const { statusCodes } = require("../../helpers");
 
 module.exports = (sequelize) => {
   class Category extends Model {
+    static STATUS = ["visible", "not-visible"];
     static async checkPermission(user, id) {
       const db = sequelize.models;
       const category = await this.findOne({
@@ -24,8 +25,8 @@ module.exports = (sequelize) => {
   Category.init(
     {
       name: { type: DataTypes.STRING(100) },
-      description: { type: DataTypes.TEXT },
-      icon: { type: DataTypes.TEXT, nullable: true },
+      Icon: { type: DataTypes.TEXT },
+      status: { type: DataTypes.ENUM(Dish.STATUS), defaultValue: "visible" },
     },
     {
       sequelize,

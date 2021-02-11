@@ -39,8 +39,8 @@ module.exports = (sequelize) => {
       price: { type: DataTypes.FLOAT, allowNull: false },
       discount: { type: DataTypes.FLOAT, defaultValue: 0 },
       status: { type: DataTypes.ENUM(Dish.STATUS), defaultValue: "active" },
-      allergies: { type: DataTypes.TEXT, defaultValue: "" },
       calories: { type: DataTypes.FLOAT },
+      PreparationTime: { type: DataTypes.FLOAT },
     },
     {
       sequelize,
@@ -48,6 +48,9 @@ module.exports = (sequelize) => {
       underscored: true,
     }
   );
+  Dish.associate = (models) => {
+    Dish.belongsToMany(models.Alergy, { foreignKey: { name: "dishId", allowNull: false } });
+  };
 
   return Dish;
 };

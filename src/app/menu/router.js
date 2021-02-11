@@ -8,9 +8,9 @@ const router = require("express").Router();
  **********************/
 
 //MM-6
-router.post("/", authorization(["admin", "manager", "author"]), joiValidator(validator.create), catchAsync(controller.create));
+router.post("/", authorization(["admin", "manager", "author"]), MulterStorage.single("image"), joiValidator(validator.create), catchAsync(controller.create));
 
-router.patch("/:id", authorization(["admin", "manager", "author"]), joiValidator(validator.update), catchAsync(controller.update));
+router.patch("/:id", authorization(["admin", "manager", "author"]), MulterStorage.single("image"), joiValidator(validator.update), catchAsync(controller.update));
 
 router.delete("/:id", authorization(["admin", "manager", "author"]), joiValidator(validator.paramId), catchAsync(controller.delete));
 

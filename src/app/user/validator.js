@@ -8,7 +8,7 @@ module.exports = {
     body: Joi.object({
       role: Joi.string().valid("admin", "accountant", "waiter", "chief", "author").required(),
       to: Joi.string().required(),
-      subject: Joi.string().required(),
+      subject: Joi.string(),
       text: Joi.string(),
       html: Joi.string(),
     }),
@@ -23,6 +23,7 @@ module.exports = {
       phone: Joi.string().required(),
       password: Joi.string().min(8).required(),
       birthdate: Joi.date().required(),
+      address: Joi.string().require(),
     }).required(),
   }),
 };
