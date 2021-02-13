@@ -36,11 +36,10 @@ module.exports = {
   //MM-8
   getAll: async (req, res) => {
     const { user, query } = req;
-    const categoryId = query.categoryId;
-    const offset = query.offset || 0;
-    const limit = query.limit || 50;
-    const q = query.q ? query.q : "";
-    const result = await service.getAll(user, { categoryId, offset, limit, q });
+    query.offset = query.offset || 0;
+    query.limit = query.limit || 50;
+    query.q = query.q ? query.q : "";
+    const result = await service.getAll(user, query);
     res.status(statusCodes.OK).send(result);
   },
 };

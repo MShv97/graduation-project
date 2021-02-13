@@ -7,13 +7,14 @@ const db = sequelize.models;
 module.exports = {
   //MM-8
   create: async (user, body, files) => {
+    let dish;
     await sequelize.transaction(async (trx) => {
-      const [dish] = await Promise.all([
-        db.Dish.create(body, { transaction: trx }),
+      [dish] = await Promise.all([
+        // create dish
+        db.Dish.create({ ...body, restaurantId: user.restaurantId }, { transaction: trx }),
         //check permission to category
         db.Category.checkPermission(user, body.categoryId),
       ]);
-
       if (files) {
         const images = files.map((val) => ({
           dishId: dish.id,
@@ -22,6 +23,7 @@ module.exports = {
         await db.DishImage.bulkCreate(images, { transaction: trx });
       }
     });
+    return { dishId: dish.id };
   },
   //MM-8
   update: async (user, id, body, files) => {
@@ -37,10 +39,7 @@ module.exports = {
     }
     // update
     await sequelize.transaction(async (trx) => {
-      await Promise.all([
-        db.Dish.update(body, { where: { id }, transaction: trx }),
-        db.DishImage.bulkCreate(images, { transaction: trx }),
-      ]);
+      await Promise.all([db.Dish.update(body, { where: { id }, transaction: trx }), db.DishImage.bulkCreate(images, { transaction: trx })]);
     });
   },
   //MM-8
@@ -58,18 +57,24 @@ module.exports = {
   getById: async (user, id) => {
     const result = await db.Dish.findOne({
       where: { id },
-      include: [{ attributes: { exclude: ["dishId"] }, model: db.DishImage, as: "images" }],
+      include: [{ attributes: { exclude: ["dishId", "id"] }, model: db.DishImage, as: "images" }],
     });
     return result;
   },
   //MM-16
   getAll: async (user, query) => {
+    const conditions = {
+      categoryId: query.categoryId,
+      [Op.or]: [{ name: { [Op.like]: `${query.q}%` } }, { arName: { [Op.like]: `${query.q}%` } }],
+    };
+    if (query.status) conditions.status = query.status;
+
     const { count, rows } = await db.Dish.findAndCountAll({
-      where: { categoryId: query.categoryId, name: { [Op.like]: `%${query.q}%` } },
+      where: conditions,
       include: [{ attributes: { exclude: ["dishId"] }, model: db.DishImage, as: "images" }],
       offset: Number(query.offset),
       limit: Number(query.limit),
-      distinct: true,
+      order: [["id", "desc"]],
     });
     return { totalCount: count, data: rows };
   },

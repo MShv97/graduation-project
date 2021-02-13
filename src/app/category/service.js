@@ -7,13 +7,16 @@ const db = sequelize.models;
 module.exports = {
   //MM-7
   create: async (user, body) => {
+    let category;
     await sequelize.transaction(async (trx) => {
-      await Promise.all([
+      [category] = await Promise.all([
+        // check permission
         db.Menu.checkPermission(user, body.menuId),
         // create
         db.Category.create(body, { transaction: trx }),
       ]);
     });
+    return { categoryId: category.id };
   },
   //MM-7
   update: async (user, id, body) => {

@@ -1,5 +1,6 @@
 const Joi = require("joi");
 const { commonValidators } = require("../../helpers");
+const sequelize = require("../../database");
 
 module.exports = {
   ...commonValidators,
@@ -8,12 +9,14 @@ module.exports = {
     body: Joi.object({
       categoryId: Joi.number().required(),
       name: Joi.string().required(),
-      price: Joi.number().required(),
+      arName: Joi.string().required(),
       description: Joi.string().required(),
-      PreparationTime: Joi.number().required(),
+      arDescription: Joi.string().required(),
       code: Joi.string().required(),
-      allergies: Joi.array().items(Joi.string()),
+      price: Joi.number().required(),
       calories: Joi.number(),
+      PreparationTime: Joi.number().required(),
+      allergies: Joi.alternatives().try(Joi.array().items(Joi.number()), Joi.number()),
     }).required(),
   }),
   //MM-8
@@ -23,14 +26,16 @@ module.exports = {
     }).required(),
     body: Joi.object({
       name: Joi.string(),
+      arName: Joi.string(),
       description: Joi.string(),
+      arDescription: Joi.string(),
       code: Joi.string(),
       price: Joi.number(),
       discount: Joi.number(),
-      status: Joi.string(),
-      allergies: Joi.array().items(Joi.string()),
+      status: Joi.string().valid(...sequelize.models.Dish.STATUS),
+      allergies: Joi.alternatives().try(Joi.array().items(Joi.number()), Joi.number()),
       calories: Joi.number(),
-      PreparationTime: Joi.number().required(),
+      PreparationTime: Joi.number(),
     }).required(),
   }),
   // MM-8
@@ -41,6 +46,7 @@ module.exports = {
       offset: Joi.number().min(0).default(0),
       limit: Joi.number().min(1).default(50),
       q: Joi.string().allow(""),
+      status: Joi.alternatives().try(Joi.array().items(Joi.string().valid(...sequelize.models.Dish.STATUS)), Joi.string().valid(...sequelize.models.Dish.STATUS)),
     }).required(),
   }),
 };
