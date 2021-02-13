@@ -6,9 +6,9 @@ module.exports = (sequelize) => {
     static STATUS = ["active", "disabled"];
 
     static associate(models) {
-      this.belongsTo(models.Category, { foreignKey: { name: "categoryId", allowNull: false } });
+      this.belongsTo(models.Category, { as: "category", foreignKey: { name: "categoryId", allowNull: false } });
       this.belongsTo(models.Restaurant, { foreignKey: { name: "restaurantId", allowNull: false } });
-      this.belongsToMany(models.Dish, { through: "Dish_Allergy", as: "allergies", timestamps: false });
+      this.belongsToMany(models.Allergy, { through: "dishes_allergies", as: "allergies", timestamps: false });
 
       this.hasMany(models.Order, { foreignKey: { name: "dishId", allowNull: false } });
       this.hasMany(models.DishImage, { as: "images", foreignKey: { name: "dishId", allowNull: false } });
@@ -21,14 +21,21 @@ module.exports = (sequelize) => {
         where: { id },
         include: [
           {
+            attributes: ["id"],
+            model: db.Allergy,
+            as: "allergies",
+          },
+          {
             required: true,
             attributes: [],
             model: db.Category,
+            as: "category",
             include: [{ attributes: [], model: db.Menu, where: { restaurantId: user.restaurantId } }],
           },
         ],
       });
       if (!dish) throw new Exception(statusCodes.ITEM_NOT_FOUND, "Not Found");
+      return dish;
     }
   }
 
@@ -43,7 +50,7 @@ module.exports = (sequelize) => {
       discount: { type: DataTypes.FLOAT, defaultValue: 0 },
       status: { type: DataTypes.ENUM(Dish.STATUS), defaultValue: "active" },
       calories: { type: DataTypes.INTEGER },
-      PreparationTime: { type: DataTypes.INTEGER },
+      preparationTime: { type: DataTypes.INTEGER },
     },
     {
       sequelize,

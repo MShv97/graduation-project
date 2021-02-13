@@ -1,4 +1,4 @@
-const { CustomError, statusCodes, DeletePublicError } = require("../helpers");
+const { CustomError, statusCodes, DeletePublicError, logger } = require("../helpers");
 class Exception extends Error {
   constructor(status, msg = "") {
     super(msg);
@@ -34,7 +34,7 @@ class Exception extends Error {
       message = "Not found.";
     }
 
-    console.log(err);
+    if (errCode == 500) logger.error(err);
     res.status(errCode).send({ message });
   }
 }

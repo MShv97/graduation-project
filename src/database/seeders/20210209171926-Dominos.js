@@ -22,6 +22,8 @@ module.exports = {
         phone: "+963962213470",
         birthdate: "1997/04/10",
         role: "admin",
+        created_at: new Date(),
+        updated_at: new Date(),
         restaurant_id: 1,
       },
       {
@@ -32,6 +34,8 @@ module.exports = {
         phone: "+963962213470",
         birthdate: "1997/04/10",
         role: "chef",
+        created_at: new Date(),
+        updated_at: new Date(),
         restaurant_id: 1,
       },
       {
@@ -42,6 +46,8 @@ module.exports = {
         phone: "+963962213470",
         birthdate: "1997/04/10",
         role: "manager",
+        created_at: new Date(),
+        updated_at: new Date(),
         restaurant_id: 1,
       },
       {
@@ -52,6 +58,8 @@ module.exports = {
         phone: "+963962213470",
         birthdate: "1997/04/10",
         role: "author",
+        created_at: new Date(),
+        updated_at: new Date(),
         restaurant_id: 1,
       },
       {
@@ -62,6 +70,8 @@ module.exports = {
         phone: "+963962213470",
         birthdate: "1997/04/10",
         role: "accountant",
+        created_at: new Date(),
+        updated_at: new Date(),
         restaurant_id: 1,
       },
       {
@@ -71,6 +81,8 @@ module.exports = {
         password: await hash("domPassword", Number(process.env.BCRYPT_ROUNDS)),
         phone: "+963962213470",
         birthdate: "1997/04/10",
+        created_at: new Date(),
+        updated_at: new Date(),
         role: "waiter",
         restaurant_id: 1,
       },
@@ -124,7 +136,8 @@ module.exports = {
       {
         name: "Zinger",
         ar_name: "زنجر",
-        description: "Zinger sandwich has chicken layer ,egg layer and a veggie mayo layer..that makes a wholesome meal for breakfast.",
+        description:
+          "Zinger sandwich has chicken layer ,egg layer and a veggie mayo layer..that makes a wholesome meal for breakfast.",
         ar_description: "طبقة دجاج وطبقة بيض وطبقة مايونيز",
         code: "zinger01",
         price: 3000,

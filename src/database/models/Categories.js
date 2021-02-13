@@ -7,7 +7,7 @@ module.exports = (sequelize) => {
 
     static associate(models) {
       this.belongsTo(models.Menu, { foreignKey: { name: "menuId", allowNull: false } });
-      this.belongsTo(models.CategoryIcon, { foreignKey: { name: "iconId", allowNull: false } });
+      this.belongsTo(models.CategoryIcon, { as: "icon", foreignKey: { name: "iconId", allowNull: false } });
 
       this.hasMany(models.Dish, { foreignKey: { name: "categoryId", allowNull: false } });
     }

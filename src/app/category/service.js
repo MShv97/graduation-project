@@ -7,16 +7,13 @@ const db = sequelize.models;
 module.exports = {
   //MM-7
   create: async (user, body) => {
-    let category;
-    await sequelize.transaction(async (trx) => {
-      [category] = await Promise.all([
-        // check permission
-        db.Menu.checkPermission(user, body.menuId),
-        // create
+    return await sequelize.transaction(async (trx) => {
+      const [category] = await Promise.all([
         db.Category.create(body, { transaction: trx }),
+        db.Menu.checkPermission(user, body.menuId),
       ]);
+      return { id: category.id };
     });
-    return { categoryId: category.id };
   },
   //MM-7
   update: async (user, id, body) => {
@@ -42,11 +39,21 @@ module.exports = {
   },
   //MM-7
   getById: async (user, id, query) => {
-    const result = await db.Category.findOne({
+    let result = await db.Category.findOne({
       attributes: { exclude: ["menuId"] },
       where: { id },
+      include: [
+        {
+          attributes: ["url"],
+          model: db.CategoryIcon,
+          as: "icon",
+        },
+      ],
     });
     if (!result) throw new Exception(statusCodes.ITEM_NOT_FOUND, "Not Found");
+    result = result.get({ plain: true });
+    result.icon = result.icon.url;
+
     return result;
   },
   //MM-7
@@ -57,13 +64,28 @@ module.exports = {
     };
     if (query.status) conditions.status = query.status;
 
-    const { count, rows } = await db.Category.findAndCountAll({
+    let { count, rows } = await db.Category.findAndCountAll({
       attributes: { exclude: ["menuId"] },
       where: conditions,
+      include: [
+        {
+          attributes: ["url"],
+          model: db.CategoryIcon,
+          as: "icon",
+        },
+      ],
       offset: Number(query.offset),
       limit: Number(query.limit),
       order: [["id", "desc"]],
+      distinct: true,
     });
+
+    rows = rows.map((val) => {
+      val = val.get({ plain: true });
+      val.icon = val.icon.url;
+      return val;
+    });
+
     return { totalCount: count, data: rows };
   },
 };

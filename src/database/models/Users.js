@@ -11,16 +11,16 @@ module.exports = (sequelize) => {
 
   User.init(
     {
-      firstName: { type: DataTypes.STRING(40) },
-      lastName: { type: DataTypes.STRING(40) },
+      firstName: { type: DataTypes.STRING(40), allowNull: false },
+      lastName: { type: DataTypes.STRING(40), allowNull: false },
       email: { type: DataTypes.STRING, unique: "user_email" },
-      password: { type: DataTypes.TEXT },
-      phone: { type: DataTypes.STRING(20) },
-      birthdate: { type: DataTypes.DATE },
-      avatar: { type: DataTypes.TEXT, allowNull: true },
-      role: { type: DataTypes.ENUM(User.ROLE) },
+      password: { type: DataTypes.TEXT, allowNull: false },
+      phone: { type: DataTypes.STRING(20), allowNull: false },
+      birthdate: { type: DataTypes.DATE, allowNull: false },
+      avatar: { type: DataTypes.TEXT },
+      role: { type: DataTypes.ENUM(User.ROLE), allowNull: false },
       address: { type: DataTypes.TEXT },
-      verified: { type: DataTypes.BOOLEAN },
+      verified: { type: DataTypes.BOOLEAN, defaultValue: false },
     },
     {
       sequelize,

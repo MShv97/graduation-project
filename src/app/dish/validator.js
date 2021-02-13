@@ -15,7 +15,7 @@ module.exports = {
       code: Joi.string().required(),
       price: Joi.number().required(),
       calories: Joi.number(),
-      PreparationTime: Joi.number().required(),
+      preparationTime: Joi.number().required(),
       allergies: Joi.alternatives().try(Joi.array().items(Joi.number()), Joi.number()),
     }).required(),
   }),
@@ -35,19 +35,22 @@ module.exports = {
       status: Joi.string().valid(...sequelize.models.Dish.STATUS),
       allergies: Joi.alternatives().try(Joi.array().items(Joi.number()), Joi.number()),
       calories: Joi.number(),
-      PreparationTime: Joi.number(),
+      preparationTime: Joi.number(),
     }).required(),
   }),
   // MM-8
   getAll: Joi.object({
     query: Joi.object({
-      categoryId: Joi.number(),
-      restaurantId: Joi.number().required(),
+      categoryId: Joi.alternatives().try(Joi.array().items(Joi.number()), Joi.number()),
+      restaurantId: Joi.number(),
       total: Joi.string().allow(""),
       offset: Joi.number().min(0).default(0),
       limit: Joi.number().min(1).default(50),
       q: Joi.string().allow(""),
-      status: Joi.alternatives().try(Joi.array().items(Joi.string().valid(...sequelize.models.Dish.STATUS)), Joi.string().valid(...sequelize.models.Dish.STATUS)),
-    }).required(),
+      status: Joi.alternatives().try(
+        Joi.array().items(Joi.string().valid(...sequelize.models.Dish.STATUS)),
+        Joi.string().valid(...sequelize.models.Dish.STATUS)
+      ),
+    }).or("categoryId", "restaurantId"),
   }),
 };
