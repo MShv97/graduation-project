@@ -64,11 +64,11 @@ module.exports = {
   //MM-16
   getAll: async (user, query) => {
     const conditions = {
-      categoryId: query.categoryId,
+      restaurantId: query.restaurantId,
       [Op.or]: [{ name: { [Op.like]: `${query.q}%` } }, { arName: { [Op.like]: `${query.q}%` } }],
     };
     if (query.status) conditions.status = query.status;
-
+    if (query.categoryId) conditions.categoryId = categoryId;
     const { count, rows } = await db.Dish.findAndCountAll({
       where: conditions,
       include: [{ attributes: { exclude: ["dishId"] }, model: db.DishImage, as: "images" }],

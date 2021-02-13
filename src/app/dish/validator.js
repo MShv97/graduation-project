@@ -41,7 +41,8 @@ module.exports = {
   // MM-8
   getAll: Joi.object({
     query: Joi.object({
-      categoryId: Joi.number().required(),
+      categoryId: Joi.number(),
+      restaurantId: Joi.number().required(),
       total: Joi.string().allow(""),
       offset: Joi.number().min(0).default(0),
       limit: Joi.number().min(1).default(50),
