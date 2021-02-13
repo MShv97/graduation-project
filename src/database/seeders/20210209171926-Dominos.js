@@ -99,7 +99,7 @@ module.exports = {
     ];
 
     const tables = [];
-    for (let i = 0; i < 10; i++) tables.push({ code: require("uuid").v4(), restaurant_id: 1, menu_id: 1 });
+    for (let i = 0; i < 10; i++) tables.push({ code: require("uuid").v4(), number: i + 1, restaurant_id: 1, menu_id: 1 });
 
     const categories = [
       {

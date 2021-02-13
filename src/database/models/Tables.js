@@ -1,13 +1,22 @@
 const { Model, DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
-  class Table extends Model {}
+  class Table extends Model {
+    static STATUS = ["active", "busy", "out of service"];
+
+    static associate(models) {
+      this.hasMany(models.Client, { foreignKey: { name: "tableId", allowNull: false } });
+
+      this.belongsTo(models.Restaurant, { foreignKey: { name: "restaurantId", allowNull: false } });
+      this.belongsTo(models.Menu, { foreignKey: { name: "menuId", allowNull: false } });
+    }
+  }
 
   Table.init(
     {
       code: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4 },
-      QR: { type: DataTypes.TEXT, allowNull: true },
-      status: { type: DataTypes.ENUM("active", "busy", "out of service"), defaultValue: "active" },
+      number: { type: DataTypes.SMALLINT, allowNull: false },
+      status: { type: DataTypes.ENUM(Table.STATUS), defaultValue: "active" },
     },
     {
       indexes: [{ unique: true, fields: ["restaurant_id", "code"] }],
@@ -16,13 +25,6 @@ module.exports = (sequelize) => {
       underscored: true,
     }
   );
-
-  Table.associate = (models) => {
-    Table.hasMany(models.Client, { foreignKey: { name: "tableId", allowNull: false } });
-
-    Table.belongsTo(models.Restaurant, { foreignKey: { name: "restaurantId", allowNull: false } });
-    Table.belongsTo(models.Menu, { foreignKey: { name: "menuId", allowNull: false } });
-  };
 
   return Table;
 };

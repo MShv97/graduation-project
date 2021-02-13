@@ -50,7 +50,7 @@ module.exports = (sequelize) => {
       discount: { type: DataTypes.FLOAT, defaultValue: 0 },
       status: { type: DataTypes.ENUM(Dish.STATUS), defaultValue: "active" },
       calories: { type: DataTypes.INTEGER },
-      preparationTime: { type: DataTypes.INTEGER },
+      preparationTime: { type: DataTypes.SMALLINT },
     },
     {
       sequelize,

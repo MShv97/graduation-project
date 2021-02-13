@@ -30,7 +30,7 @@ class Exception extends Error {
       message = err.message;
     }
 
-    if (err.errCode == statusCodes.ITEM_NOT_FOUND) {
+    if (err.errCode == statusCodes.ITEM_NOT_FOUND && !message) {
       message = "Not found.";
     }
 

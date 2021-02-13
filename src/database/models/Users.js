@@ -3,9 +3,12 @@ const { Model, DataTypes } = require("sequelize");
 module.exports = (sequelize) => {
   class User extends Model {
     static ROLE = ["admin", "manager", "author", "chef", "accountant", "waiter"];
+    static STATUS = ["unverified", "verified", "fired"];
 
     static associate(models) {
       this.belongsTo(models.Restaurant, { foreignKey: { name: "restaurantId", allowNull: false } });
+
+      this.hasMany(models.Order, { foreignKey: { name: "userId" } });
     }
   }
 
@@ -20,7 +23,7 @@ module.exports = (sequelize) => {
       avatar: { type: DataTypes.TEXT },
       role: { type: DataTypes.ENUM(User.ROLE), allowNull: false },
       address: { type: DataTypes.TEXT },
-      verified: { type: DataTypes.BOOLEAN, defaultValue: false },
+      status: { type: DataTypes.ENUM(User.STATUS), defaultValue: "unverified" },
     },
     {
       sequelize,

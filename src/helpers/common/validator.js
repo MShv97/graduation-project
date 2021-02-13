@@ -4,7 +4,7 @@ module.exports = {
   //MM-13
   paramId: Joi.object({
     params: Joi.object({
-      id: Joi.number().required(),
+      id: Joi.number().min(1).required(),
     }).required(),
   }),
   //MM-13
