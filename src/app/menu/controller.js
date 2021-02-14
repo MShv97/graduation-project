@@ -39,6 +39,13 @@ module.exports = {
     const result = await service.getById(user, id);
     result ? res.status(statusCodes.OK).send(result) : res.sendStatus(statusCodes.ITEM_NOT_FOUND);
   },
+  //MM-28
+  getTables: async (req, res) => {
+    const { id } = req.params;
+    const { user } = req;
+    const result = await service.getTables(user, id);
+    res.status(statusCodes.OK).send(result);
+  },
 
   //MM-8
   getAll: async (req, res) => {

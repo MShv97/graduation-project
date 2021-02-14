@@ -18,6 +18,8 @@ router.delete("/:id/image", authorization(["admin", "manager", "author"]), joiVa
 
 router.get("/:id", authorization(["any"]), joiValidator(validator.paramId), catchAsync(controller.getById));
 
+router.get("/:id/tables", authorization(["any"]), joiValidator(validator.paramId), catchAsync(controller.getTables));
+
 router.get("/", authorization(["any"]), joiValidator(validator.getAll), catchAsync(controller.getAll));
 
 module.exports = router;

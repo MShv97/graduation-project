@@ -59,4 +59,12 @@ module.exports = {
 
     return { totalCount: count, data: rows };
   },
+  //MM-28
+  getTables: async (user, id) => {
+    const result = await db.Table.findAll({
+      attributes: ["code", "number"],
+      where: { restaurantId: user.restaurantId, menuId: id },
+    });
+    return { data: result };
+  },
 };
