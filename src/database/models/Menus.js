@@ -5,7 +5,7 @@ module.exports = (sequelize) => {
   class Menu extends Model {
     static associate(models) {
       this.belongsTo(models.Restaurant, { foreignKey: { name: "restaurantId", allowNull: false } });
-      this.hasMany(models.Category, { foreignKey: { name: "menuId", allowNull: false } });
+      this.hasMany(models.Category, { as: "Categories", foreignKey: { name: "menuId", allowNull: false } });
     }
 
     static async checkPermission(user, id) {

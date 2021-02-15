@@ -16,4 +16,8 @@ router.use("/api/table", require("./table/router"));
 
 router.use("/api/order", require("./order/router"));
 
+router.use("/api/allergy", require("./allergy/router"));
+
+router.use("/api/icon", require("./icon/router"));
+
 module.exports = router;

@@ -1,13 +1,14 @@
 // MM-30
 const controller = require("./controller");
-const validator = require("./validator");
+const validator = require("../../helpers/common/validator");
 const { joiValidator, catchAsync, authorization } = require("../../middlewares");
 const router = require("express").Router();
 
 /***********************
- * @Router /api/table  *
+ * @Router /api/icons  *
  ***********************/
 //MM-30
-router.get("/:code", authorization(["any"]), joiValidator(validator.getByCode), catchAsync(controller.getByCode));
+
+router.get("/", authorization(["any"]), joiValidator(validator.getAll), catchAsync(controller.getAll));
 
 module.exports = router;

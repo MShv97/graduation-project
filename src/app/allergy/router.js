@@ -5,9 +5,12 @@ const { joiValidator, catchAsync, authorization } = require("../../middlewares")
 const router = require("express").Router();
 
 /***********************
- * @Router /api/table  *
+ * @Router /api/allergy  *
  ***********************/
 //MM-30
-router.get("/:code", authorization(["any"]), joiValidator(validator.getByCode), catchAsync(controller.getByCode));
+
+router.get("/:id", authorization(["any"]), joiValidator(validator.paramId), catchAsync(controller.getById));
+
+router.get("/", authorization(["any"]), joiValidator(validator.getAll), catchAsync(controller.getAll));
 
 module.exports = router;
