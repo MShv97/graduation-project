@@ -9,7 +9,7 @@ module.exports = {
       count: Joi.number().required(),
     }),
   }),
-  //MM-30
+  //MM-29
   getByCode: Joi.object({
     params: Joi.object({
       code: Joi.string().required(),

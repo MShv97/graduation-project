@@ -5,19 +5,17 @@ const { Op } = require("sequelize");
 const db = sequelize.models;
 
 module.exports = {
-  // MM-30
+  // MM-29
   getById: async (id) => {
-    const result = await db.Allergy.findOne({
-      where: id,
-    });
-    if (!result) return;
-    return result;
+    return await db.Allergy.findByPk(id);
   },
-  getAll: async (query) => {
+  // MM-29
+  getAll: async ({ offset, limit, q, order }) => {
     const { count, rows } = await db.Allergy.findAndCountAll({
-      offset: Number(query.offset),
-      limit: Number(query.limit),
-      distinct: true,
+      where: { [Op.or]: [{ name: { [Op.like]: `${q}%` } }, { arName: { [Op.like]: `${q}%` } }] },
+      offset: Number(offset),
+      limit: Number(limit),
+      order: [[order, "asc"]],
     });
     return { totalCount: count, data: rows };
   },

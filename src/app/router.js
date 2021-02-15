@@ -18,6 +18,6 @@ router.use("/api/order", require("./order/router"));
 
 router.use("/api/allergy", require("./allergy/router"));
 
-router.use("/api/icon", require("./icon/router"));
+router.use("/api/icon", require("./category/icon/router"));
 
 module.exports = router;

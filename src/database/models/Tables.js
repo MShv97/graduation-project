@@ -7,8 +7,8 @@ module.exports = (sequelize) => {
     static associate(models) {
       this.hasMany(models.Client, { foreignKey: { name: "tableId", allowNull: false } });
 
-      this.belongsTo(models.Restaurant, { as: "Restaurant", foreignKey: { name: "restaurantId", allowNull: false } });
-      this.belongsTo(models.Menu, { as: "Menu", foreignKey: { name: "menuId", allowNull: false } });
+      this.belongsTo(models.Restaurant, { as: "restaurant", foreignKey: { name: "restaurantId", allowNull: false } });
+      this.belongsTo(models.Menu, { as: "menu", foreignKey: { name: "menuId", allowNull: false } });
     }
   }
   Table.init(

@@ -5,28 +5,24 @@ const { Op } = require("sequelize");
 const db = sequelize.models;
 
 module.exports = {
-  // MM-30
-  getByCode: async (code) => {
+  // MM-29
+  getByCode: async (code, query) => {
     let result = await db.Table.findOne({
-      where: code,
+      where: { code },
       attributes: ["number"],
       include: [
+        { required: true, model: db.Restaurant, as: "restaurant" },
         {
           required: true,
-          attributes: ["id", "name", "logo"],
-          model: db.Restaurant,
-          as: "Restaurant",
-        },
-        {
-          required: true,
-          attributes: ["id", "title", "arTitle", "image"],
+          attributes: { exclude: ["restaurantId"] },
           model: db.Menu,
-          as: "Menu",
+          as: "menu",
           include: [
             {
-              attributes: ["id", "title", "arTitle", "status"],
+              attributes: { exclude: ["menuId"] },
               model: db.Category,
-              as: "Categories",
+              as: "categories",
+              limit: Number(query.limit),
               include: [{ attributes: ["url"], model: db.CategoryIcon, as: "icon" }],
             },
           ],
@@ -34,9 +30,14 @@ module.exports = {
       ],
     });
     if (!result) return;
+
     result = result.get({ plain: true });
-    result.Categories = result.Menu.Categories;
-    delete result.Menu.Categories;
+    result.categories = result.menu.categories.map((val) => {
+      val.icon = val.icon.url;
+      return val;
+    });
+    delete result.menu.categories;
+
     return result;
   },
 };

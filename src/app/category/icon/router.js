@@ -1,11 +1,11 @@
 const controller = require("./controller");
 const validator = require("./validator");
-const { joiValidator, catchAsync, authorization } = require("../../middlewares");
+const { joiValidator, catchAsync, authorization } = require("../../../middlewares");
 const router = require("express").Router();
 
-/*************************
- * @Router /api/allergy  *
- *************************/
+/***********************
+ * @Router /api/icon   *
+ ***********************/
 
 router.get("/:id", joiValidator(validator.paramId), catchAsync(controller.getById));
 
