@@ -1,3 +1,4 @@
+const { Instance } = require("chalk");
 const { Model, DataTypes } = require("sequelize");
 const { statusCodes } = require("../../helpers");
 
@@ -6,10 +7,10 @@ module.exports = (sequelize) => {
     static STATUS = ["visible", "hidden"];
 
     static associate(models) {
-      this.belongsTo(models.Menu, { foreignKey: { name: "menuId", allowNull: false } });
-      this.belongsTo(models.CategoryIcon, { as: "icon", foreignKey: { name: "iconId", allowNull: false } });
+      this.belongsTo(models.Menu, { foreignKey: { name: "menuId", allowNull: false }, onDelete: "CASCADE" });
+      this.belongsTo(models.CategoryIcon, { as: "icon", foreignKey: { name: "iconId" }, onDelete: "SET NULL" });
 
-      this.hasMany(models.Dish, { foreignKey: { name: "categoryId", allowNull: false } });
+      this.hasMany(models.Dish, { foreignKey: { name: "categoryId", allowNull: false }, onDelete: "CASCADE" });
     }
 
     static async checkPermission(user, id) {
@@ -18,6 +19,7 @@ module.exports = (sequelize) => {
         attributes: ["id"],
         where: { id },
         include: [{ required: true, attributes: [], model: db.Menu, where: { restaurantId: user.restaurantId } }],
+        transaction,
       });
       if (!category) throw new Exception(statusCodes.ITEM_NOT_FOUND, "Not Found");
     }
@@ -31,8 +33,8 @@ module.exports = (sequelize) => {
     },
     {
       sequelize,
-      timestamps: false,
       underscored: true,
+      paranoid: true,
     }
   );
 

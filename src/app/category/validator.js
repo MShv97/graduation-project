@@ -3,7 +3,7 @@ const { commonValidators } = require("../../helpers");
 const sequelize = require("../../database");
 
 module.exports = {
-  ...commonValidators,
+  paramId: commonValidators.paramId,
   //MM-7
   create: Joi.object({
     body: Joi.object({
@@ -28,11 +28,8 @@ module.exports = {
   // MM-7
   getAll: Joi.object({
     query: Joi.object({
+      ...commonValidators.pagination,
       menuId: Joi.number().required(),
-      total: Joi.string().allow(""),
-      offset: Joi.number().min(0).default(0),
-      limit: Joi.number().min(1).default(50),
-      q: Joi.string().allow(""),
       status: Joi.alternatives().try(
         Joi.array().items(Joi.string().valid(...sequelize.models.Category.STATUS)),
         Joi.string().valid(...sequelize.models.Category.STATUS)

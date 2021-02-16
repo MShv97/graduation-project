@@ -7,7 +7,7 @@ const db = sequelize.models;
 module.exports = {
   //MM-27
   create: async (body) => {
-    return await sequelize.transaction(async (trx) => {
+    return await sequelize.transaction(async (transaction) => {
       // find table and change to busy
       const table = await db.Table.findOne({
         attributes: ["id", "status"],
@@ -29,9 +29,9 @@ module.exports = {
       if (dishIds.size !== body.dishes.length) throw new Exception(statusCodes.BAD_REQUEST, `Duplicate dish id.`);
 
       const [client, dishes] = await Promise.all([
-        db.Client.create({ tableId: table.id }, { transaction: trx }),
+        db.Client.create({ tableId: table.id }, { transaction }),
         db.Dish.findAll({ attributes: ["id", "price", "discount"], where: { id: [...dishIds] } }),
-        table.save({ transaction: trx }),
+        table.save({ transaction }),
       ]);
 
       dishes.forEach((val) => dishIds.delete(val.id));
@@ -45,7 +45,7 @@ module.exports = {
         note: dishesById[val.id].note,
       }));
 
-      orders = await db.Order.bulkCreate(orders, { transaction: trx });
+      orders = await db.Order.bulkCreate(orders, { transaction });
       orders = orders.map((val) => _.pick(val, ["id", "dishId", "status"]));
 
       return { orders };
@@ -53,17 +53,27 @@ module.exports = {
   },
   //MM-27
   update: async (id, body) => {
-    await sequelize.transaction(async (trx) => {
+    await sequelize.transaction(async (transaction) => {
       const [order] = await Promise.all([
-        db.Order.findByPk(id, { attributes: ["status"] }),
-        db.Order.update(body, { where: { id }, transaction: trx }),
+        db.Order.findByPk(id, { attributes: ["status"], transaction }),
+        db.Order.update(body, { where: { id }, transaction }),
       ]);
       if (order.status !== "pending") throw new Exception(statusCodes.INVALID_OPERATION, "Order is being cooked.");
     });
   },
   //MM-27
-  updateStatus: async (user, id, body) => {
-    await db.Order.update({ userId: user.userId, ...body }, { where: { id } });
+  updateStatus: async (user, id, body, dishId, transaction) => {
+    const conditions = {};
+    if (id) conditions.id = id;
+    if (dishId) {
+      conditions.dishId = dishId;
+      conditions.status = "pending";
+
+      const orders = db.Order.findAll({ where: { conditions } });
+      //TODO: raise socket notification after update
+    }
+
+    await db.Order.update({ userId: user.userId, ...body }, { where: conditions, transaction });
   },
   //MM-27
   getAll: async (user, query) => {

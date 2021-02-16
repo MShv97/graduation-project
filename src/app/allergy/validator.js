@@ -3,7 +3,7 @@ const { commonValidators } = require("../../helpers");
 const sequelize = require("../../database");
 
 module.exports = {
-  ...commonValidators,
+  paramId: commonValidators.paramId,
   getAll: Joi.object({
     query: Joi.object({
       total: Joi.string().allow(""),

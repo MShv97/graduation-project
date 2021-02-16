@@ -2,7 +2,7 @@ const Joi = require("joi");
 const { commonValidators } = require("../../helpers");
 
 module.exports = {
-  ...commonValidators,
+  paramId: commonValidators.paramId,
   //MM-18
   invite: Joi.object({
     body: Joi.object({

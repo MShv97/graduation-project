@@ -6,8 +6,12 @@ module.exports = (sequelize) => {
     static STATUS = ["active", "disabled"];
 
     static associate(models) {
-      this.belongsTo(models.Category, { as: "category", foreignKey: { name: "categoryId", allowNull: false } });
-      this.belongsTo(models.Restaurant, { foreignKey: { name: "restaurantId", allowNull: false } });
+      this.belongsTo(models.Category, {
+        as: "category",
+        foreignKey: { name: "categoryId", allowNull: false },
+        onDelete: "CASCADE",
+      });
+      this.belongsTo(models.Restaurant, { foreignKey: { name: "restaurantId", allowNull: false }, onDelete: "CASCADE" });
       this.belongsToMany(models.Allergy, { through: "dishes_allergies", as: "allergies", timestamps: false });
 
       this.hasMany(models.Order, { foreignKey: { name: "dishId", allowNull: false } });
@@ -33,6 +37,7 @@ module.exports = (sequelize) => {
             include: [{ attributes: [], model: db.Menu, where: { restaurantId: user.restaurantId } }],
           },
         ],
+        transaction,
       });
       if (!dish) throw new Exception(statusCodes.ITEM_NOT_FOUND, "Not Found");
       return dish;
@@ -54,8 +59,11 @@ module.exports = (sequelize) => {
     },
     {
       sequelize,
-      timestamps: false,
       underscored: true,
+      paranoid: true,
+      defaultScope: {
+        attributes: { exclude: ["deletedAt"] },
+      },
     }
   );
 

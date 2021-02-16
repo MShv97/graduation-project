@@ -2,7 +2,7 @@ const Joi = require("joi");
 const { commonValidators } = require("../../helpers");
 
 module.exports = {
-  ...commonValidators,
+  paramId: commonValidators.paramId,
   //MM-6
   create: Joi.object({
     body: Joi.object({
@@ -22,5 +22,8 @@ module.exports = {
       arTitle: Joi.string(),
       currency: Joi.string(),
     }).required(),
+  }),
+  getAll: Joi.object({
+    ...commonValidators.pagination,
   }),
 };

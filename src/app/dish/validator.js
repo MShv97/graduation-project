@@ -1,9 +1,9 @@
 const Joi = require("joi");
-const { commonValidators } = require("../../helpers");
+const { commonValidators, statusCodes } = require("../../helpers");
 const sequelize = require("../../database");
 
 module.exports = {
-  ...commonValidators,
+  paramId: commonValidators.paramId,
   //MM-8
   create: Joi.object({
     body: Joi.object({
@@ -41,16 +41,24 @@ module.exports = {
   // MM-8
   getAll: Joi.object({
     query: Joi.object({
+      ...commonValidators.pagination,
       categoryId: Joi.alternatives().try(Joi.array().items(Joi.number()), Joi.number()),
       restaurantId: Joi.number(),
-      total: Joi.string().allow(""),
-      offset: Joi.number().min(0).default(0),
-      limit: Joi.number().min(1).default(50),
-      q: Joi.string().allow(""),
       status: Joi.alternatives().try(
         Joi.array().items(Joi.string().valid(...sequelize.models.Dish.STATUS)),
         Joi.string().valid(...sequelize.models.Dish.STATUS)
       ),
     }).or("categoryId", "restaurantId"),
+  }),
+  //MM-
+  changeStatus: Joi.object({
+    params: Joi.object({
+      id: Joi.number().required(),
+    }).required(),
+    body: Joi.object({
+      status: Joi.string()
+        .valid(...sequelize.models.Dish.STATUS)
+        .required(),
+    }).required(),
   }),
 };

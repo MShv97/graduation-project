@@ -7,9 +7,9 @@ const db = sequelize.models;
 module.exports = {
   //MM-7
   create: async (user, body) => {
-    return await sequelize.transaction(async (trx) => {
+    return await sequelize.transaction(async (transaction) => {
       const [category] = await Promise.all([
-        db.Category.create(body, { transaction: trx }),
+        db.Category.create(body, { transaction }),
         db.Menu.checkPermission(user, body.menuId),
       ]);
       return { id: category.id };
@@ -17,23 +17,24 @@ module.exports = {
   },
   //MM-7
   update: async (user, id, body) => {
-    await sequelize.transaction(async (trx) => {
+    await sequelize.transaction(async (transaction) => {
       await Promise.all([
         //check permission to category
         db.Category.checkPermission(user, id),
         // update
-        db.Category.update(body, { where: { id }, transaction: trx }),
+        db.Category.update(body, { where: { id }, transaction }),
       ]);
     });
   },
   //MM-7
   delete: async (user, id) => {
-    await sequelize.transaction(async (trx) => {
+    await sequelize.transaction(async (transaction) => {
       await Promise.all([
         //check permission to category
         db.Category.checkPermission(user, id),
         //delete
-        db.Category.destroy({ where: { id }, transaction: trx }),
+        db.Category.destroy({ where: { id }, transaction }),
+        db.Dish.destroy({ where: { categoryId: id }, transaction }),
       ]);
     });
   },

@@ -17,6 +17,14 @@ module.exports = {
     res.status(statusCodes.UPDATED).send(result);
   },
 
+  //MM-
+  changeStatus: async (req, res) => {
+    const { id } = req.params;
+    const { user, body } = req;
+    const result = await service.changeStatus(user, id, body);
+    res.status(statusCodes.UPDATED).send(result);
+  },
+
   //MM-8
   delete: async (req, res) => {
     const { id } = req.params;

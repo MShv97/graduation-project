@@ -29,7 +29,17 @@ module.exports = {
   },
   //MM-6
   delete: async (user, id) => {
-    await db.Menu.destroy({ where: { id, restaurantId: user.restaurantId } });
+    await sequelize.transaction(async (transaction) => {
+      let categoryIds = await db.Category.findAll({ where: { menuId: id }, transaction });
+      categoryIds = categoryIds.map((val) => val.id);
+
+      const [rows] = await Promise.all([
+        db.Menu.destroy({ where: { id, restaurantId: user.restaurantId }, transaction }),
+        db.Category.destroy({ where: { menuId: id }, transaction }),
+        db.Dish.destroy({ where: { categoryId: categoryIds }, transaction }),
+      ]);
+      if (!rows) throw new Exception(statusCodes.ITEM_NOT_FOUND, "Not Found");
+    });
   },
   //MM-6
   deleteImage: async (user, id) => {

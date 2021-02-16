@@ -8,12 +8,10 @@ module.exports = {
     }).required(),
   }),
   //MM-13
-  getAll: Joi.object({
-    query: Joi.object({
-      total: Joi.string().allow(""),
-      offset: Joi.number().min(0).default(0),
-      limit: Joi.number().min(1).default(50),
-      q: Joi.string().allow(""),
-    }),
-  }),
+  pagination: {
+    total: Joi.string().allow(""),
+    offset: Joi.number().min(0).default(0),
+    limit: Joi.number().min(1).default(50),
+    q: Joi.string().allow(""),
+  },
 };

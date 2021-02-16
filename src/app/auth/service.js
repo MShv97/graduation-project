@@ -4,9 +4,18 @@ const { compare, hash } = require("bcrypt");
 const { verify } = require("jsonwebtoken");
 
 module.exports = {
-  login: async (body) => {
-    const { email, password } = body;
-    let user = await db.User.findOne({ where: { email: email } });
+  login: async ({ email, password }) => {
+    let user = await db.User.findOne({
+      attributes: { exclude: ["phone", "birthdate", "address"] },
+      where: { email: email },
+      include: [
+        {
+          as: "restaurant",
+          attributes: ["name", "arName", "logo", "image"],
+          model: db.Restaurant,
+        },
+      ],
+    });
     if (!user) throw new Exception(401, "Email is invalid.");
     user = user.get({ plain: true });
     // verify password
@@ -14,7 +23,7 @@ module.exports = {
     // generate JWT tokens
     const payload = { userId: user.id, role: user.role, restaurantId: user.restaurantId };
     const result = JWTGenerator(payload);
-    result.role = user.role;
+    result.user = _.omit(user, "password");
 
     return result;
   },

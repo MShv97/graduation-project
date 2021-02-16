@@ -2,7 +2,7 @@ const Joi = require("joi");
 const { commonValidators } = require("../../helpers");
 
 module.exports = {
-  ...commonValidators,
+  paramId: commonValidators.paramId,
   //MM-22
   create: Joi.object({
     body: Joi.object({
@@ -14,5 +14,8 @@ module.exports = {
     params: Joi.object({
       code: Joi.string().required(),
     }).required(),
+    query: Joi.object({
+      limit: commonValidators.pagination.limit,
+    }),
   }),
 };

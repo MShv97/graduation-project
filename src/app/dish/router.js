@@ -14,7 +14,9 @@ router.post("/", authorization(["admin", "manager", "author"]), MulterStorage.ar
 
 router.patch("/:id", authorization(["admin", "manager", "author"]), MulterStorage.array("images", 4), joiValidator(validator.update), catchAsync(controller.update));
 
-router.delete("/:id", authorization(["admin", "manager", "author"]), joiValidator(validator.update), catchAsync(controller.delete));
+router.patch("/:id/status", authorization(["chef"]), joiValidator(validator.changeStatus), controller.changeStatus);
+
+router.delete("/:id", authorization(["admin", "manager", "author"]), joiValidator(validator.paramId), catchAsync(controller.delete));
 
 router.get("/:id", joiValidator(validator.paramId), catchAsync(controller.getById));
 

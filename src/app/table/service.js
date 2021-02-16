@@ -19,7 +19,7 @@ module.exports = {
           as: "menu",
           include: [
             {
-              attributes: { exclude: ["menuId"] },
+              attributes: { exclude: ["menuId", "deletedAt"] },
               model: db.Category,
               as: "categories",
               limit: Number(query.limit),

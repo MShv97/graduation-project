@@ -6,7 +6,11 @@ module.exports = (sequelize) => {
     static STATUS = ["unverified", "verified", "fired"];
 
     static associate(models) {
-      this.belongsTo(models.Restaurant, { foreignKey: { name: "restaurantId", allowNull: false } });
+      this.belongsTo(models.Restaurant, {
+        as: "restaurant",
+        foreignKey: { name: "restaurantId", allowNull: false },
+        onDelete: "CASCADE",
+      });
 
       this.hasMany(models.Order, { foreignKey: { name: "userId" } });
     }

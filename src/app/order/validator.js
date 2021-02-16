@@ -3,7 +3,7 @@ const { commonValidators } = require("../../helpers");
 const db = require("../../database").models;
 
 module.exports = {
-  ...commonValidators,
+  paramId: commonValidators.paramId,
   //MM-27
   create: Joi.object({
     body: Joi.object({

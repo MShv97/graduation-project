@@ -8,7 +8,10 @@ module.exports = {
       {
         id: 1,
         name: "Dominos",
+        arName: "دومينوز",
         address: "Hama-AlBaath",
+        created_at: new Date(),
+        updated_at: new Date(),
       },
     ];
 
@@ -95,6 +98,8 @@ module.exports = {
         ar_title: "القائمة الرئيسية",
         currency: "SYR",
         restaurant_id: 1,
+        created_at: new Date(),
+        updated_at: new Date(),
       },
     ];
 
@@ -108,6 +113,8 @@ module.exports = {
         ar_title: "سادندويتش",
         icon_id: 1,
         menu_id: 1,
+        created_at: new Date(),
+        updated_at: new Date(),
       },
       {
         id: 2,
@@ -115,6 +122,8 @@ module.exports = {
         ar_title: "وجبات",
         icon_id: 1,
         menu_id: 1,
+        created_at: new Date(),
+        updated_at: new Date(),
       },
     ];
 
@@ -132,6 +141,8 @@ module.exports = {
         calories: 35,
         restaurant_id: 1,
         category_id: 1,
+        created_at: new Date(),
+        updated_at: new Date(),
       },
       {
         name: "Zinger",
@@ -147,6 +158,8 @@ module.exports = {
         calories: 45,
         restaurant_id: 1,
         category_id: 1,
+        created_at: new Date(),
+        updated_at: new Date(),
       },
       {
         name: "Chitza",
@@ -161,6 +174,8 @@ module.exports = {
         calories: 100,
         restaurant_id: 1,
         category_id: 2,
+        created_at: new Date(),
+        updated_at: new Date(),
       },
       {
         name: "Grand Fajita",
@@ -175,6 +190,8 @@ module.exports = {
         calories: 100,
         restaurant_id: 1,
         category_id: 2,
+        created_at: new Date(),
+        updated_at: new Date(),
       },
     ];
 

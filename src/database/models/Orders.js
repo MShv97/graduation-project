@@ -2,7 +2,7 @@ const { Model, DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
   class Order extends Model {
-    static STATUS = ["pending", "cooking", "ready"];
+    static STATUS = ["pending", "cooking", "ready", "out of stock"];
 
     static associate(models) {
       this.belongsTo(models.Client, { foreignKey: { name: "clientId", allowNull: false } });
@@ -21,6 +21,9 @@ module.exports = (sequelize) => {
     {
       sequelize,
       underscored: true,
+      defaultScope: {
+        attributes: { exclude: ["deletedAt"] },
+      },
     }
   );
 

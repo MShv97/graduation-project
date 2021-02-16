@@ -1,11 +1,16 @@
-const db = require("../../../database").models;
 const { statusCodes } = require("../../../helpers");
+const sequelize = require("../../../database");
+
+const db = sequelize.models;
 
 module.exports = {
   delete: async (user, dishId, id) => {
-    //check user premission
-    await db.Dish.checkPermission(user, dishId);
-    await db.DishImage.destroy({ where: { id } });
-    //delete files
+    sequelize.transaction(async (transaction) => {
+      await Promise.all([
+        //check user permission
+        db.Dish.checkPermission(user, dishId),
+        db.DishImage.destroy({ where: { id }, transaction }),
+      ]);
+    });
   },
 };

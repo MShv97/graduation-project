@@ -4,14 +4,15 @@ const { statusCodes } = require("../../helpers");
 module.exports = (sequelize) => {
   class Menu extends Model {
     static associate(models) {
-      this.belongsTo(models.Restaurant, { foreignKey: { name: "restaurantId", allowNull: false } });
-      this.hasMany(models.Category, { as: "categories", foreignKey: { name: "menuId", allowNull: false } });
+      this.belongsTo(models.Restaurant, { foreignKey: { name: "restaurantId", allowNull: false }, onDelete: "CASCADE" });
+      this.hasMany(models.Category, { as: "categories", foreignKey: { name: "menuId", allowNull: false }, onDelete: "CASCADE" });
     }
 
     static async checkPermission(user, id) {
       const Menu = await this.findOne({
         attributes: ["id"],
         where: { id, restaurantId: user.restaurantId },
+        transaction,
       });
       if (!Menu) throw new Exception(statusCodes.ITEM_NOT_FOUND, "Not Found");
     }
@@ -26,8 +27,11 @@ module.exports = (sequelize) => {
     },
     {
       sequelize,
-      timestamps: false,
       underscored: true,
+      paranoid: true,
+      defaultScope: {
+        attributes: { exclude: ["deletedAt"] },
+      },
     }
   );
 

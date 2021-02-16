@@ -1,16 +1,17 @@
 const sequelize = require("../../database");
 const { statusCodes } = require("../../helpers");
 const { Op } = require("sequelize");
+const Order = require("../order/service");
 
 const db = sequelize.models;
 
 module.exports = {
   //MM-8
   create: async (user, body, files) => {
-    return await sequelize.transaction(async (trx) => {
+    return await sequelize.transaction(async (transaction) => {
       const [dish] = await Promise.all([
         // create dish
-        db.Dish.create({ ...body, restaurantId: user.restaurantId }, { transaction: trx }),
+        db.Dish.create({ ...body, restaurantId: user.restaurantId }, { transaction }),
         //check permission to category
         db.Category.checkPermission(user, body.categoryId),
       ]);
@@ -22,8 +23,8 @@ module.exports = {
 
       await Promise.all([
         // link allergies
-        dish.setAllergies(body.allergies, { transaction: trx }),
-        db.DishImage.bulkCreate(images || [], { transaction: trx }),
+        dish.setAllergies(body.allergies, { transaction }),
+        db.DishImage.bulkCreate(images || [], { transaction }),
       ]);
 
       return { id: dish.id };
@@ -31,7 +32,7 @@ module.exports = {
   },
   //MM-8
   update: async (user, id, body, files) => {
-    await sequelize.transaction(async (trx) => {
+    await sequelize.transaction(async (transaction) => {
       const images = files?.map((val) => ({
         path: val.path.replace("src\\public\\", ""),
         dishId: id,
@@ -39,22 +40,47 @@ module.exports = {
 
       const [dish] = await Promise.all([
         db.Dish.checkPermission(user, id),
-        db.Dish.update(body, { where: { id }, transaction: trx }),
-        db.DishImage.bulkCreate(images || [], { transaction: trx }),
+        db.Dish.update(body, { where: { id }, transaction }),
+        db.DishImage.bulkCreate(images || [], { transaction }),
       ]);
 
       const allergies = [...body.allergies].filter((val) => !dish.allergies.find((v) => v.id == val));
-      await dish.addAllergies(allergies, { transaction: trx });
+      await dish.addAllergies(allergies, { transaction });
+
+      /**
+       * In case of updating the status of dish to disabled
+       * update all on pending orders on this dish to out of stock
+       */
+      if (body.status == "disabled") {
+        await Order.updateStatus(user, null, { status: "out of stock" }, id, transaction);
+      }
+    });
+  },
+  //MM-
+  changeStatus: async (user, id, body) => {
+    await sequelize.transaction(async (transaction) => {
+      const [dish, ss] = await Promise.all([
+        db.Dish.checkPermission(user, id),
+        db.Dish.update(body, { where: { id }, transaction }),
+      ]);
+
+      /**
+       * In case of updating the status of dish to disabled
+       * update all on pending orders on this dish to out of stock
+       */
+      if (body.status == "disabled") {
+        await Order.updateStatus(user, null, { status: "out of stock" }, id, transaction);
+      }
     });
   },
   //MM-8
   delete: async (user, id) => {
-    await sequelize.transaction(async (trx) => {
+    await sequelize.transaction(async (transaction) => {
       await Promise.all([
         //check permission to dish
         db.Dish.checkPermission(user, id),
         //delete
-        db.Dish.destroy({ where: { id }, transaction: trx }),
+        db.Dish.destroy({ where: { id }, transaction }),
       ]);
     });
   },
@@ -65,7 +91,7 @@ module.exports = {
       where: { id },
       include: [
         {
-          attributes: { exclude: ["menuId"] },
+          attributes: { exclude: ["menuId", "deletedAt"] },
           model: db.Category,
           as: "category",
           include: [{ model: db.CategoryIcon, as: "icon" }],
