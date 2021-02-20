@@ -10,7 +10,7 @@ module.exports = {
     return await sequelize.transaction(async (transaction) => {
       // find table and change to busy
       const table = await db.Table.findOne({
-        attributes: ["id", "status"],
+        attributes: ["id", "status", "restaurantId"],
         where: { code: body.tableCode },
       });
       if (!table) throw new Exception(statusCodes.ITEM_NOT_FOUND, "Table not Found");
@@ -28,15 +28,20 @@ module.exports = {
       );
       if (dishIds.size !== body.dishes.length) throw new Exception(statusCodes.BAD_REQUEST, `Duplicate dish id.`);
 
+      // create client and check the dishes
       const [client, dishes] = await Promise.all([
         db.Client.create({ tableId: table.id }, { transaction }),
-        db.Dish.findAll({ attributes: ["id", "price", "discount"], where: { id: [...dishIds] } }),
+        db.Dish.findAll({
+          attributes: ["id", "price", "discount"],
+          where: { id: [...dishIds], restaurantId: table.restaurantId },
+        }),
         table.save({ transaction }),
       ]);
 
       dishes.forEach((val) => dishIds.delete(val.id));
-      if (dishIds.size) throw new Exception(statusCodes.ITEM_NOT_FOUND, `Dishes [${[...dishIds]}] Not Found`);
+      if (dishIds.size) throw new Exception(statusCodes.ITEM_NOT_FOUND, `Dishes [${[...dishIds]}] Not Found`, [...dishIds]);
 
+      // prepare orders
       let orders = dishes.map((val) => ({
         clientId: client.id,
         dishId: val.id,
@@ -48,17 +53,30 @@ module.exports = {
       orders = await db.Order.bulkCreate(orders, { transaction });
       orders = orders.map((val) => _.pick(val, ["id", "dishId", "status"]));
 
+      // raise socket event
+      const orderIds = orders.map((val) => val.id);
+      io.to("order:" + table.restaurantId).emit("order-create", { orderIds });
+
       return { orders };
     });
   },
   //MM-27
   update: async (id, body) => {
     await sequelize.transaction(async (transaction) => {
+      // check order and update
       const [order] = await Promise.all([
-        db.Order.findByPk(id, { attributes: ["status"], transaction }),
+        db.Order.findByPk(id, {
+          attributes: ["id", "amount", "note", "status"],
+          include: [{ attributes: ["id"], model: db.Client, include: [{ attributes: ["restaurantId"], model: db.Table }] }],
+        }),
         db.Order.update(body, { where: { id }, transaction }),
       ]);
-      if (order.status !== "pending") throw new Exception(statusCodes.INVALID_OPERATION, "Order is being cooked.");
+      if (!order) throw new Exception(statusCodes.ITEM_NOT_FOUND);
+      if (order.status !== "pending")
+        throw new Exception(statusCodes.INVALID_OPERATION, `Order status is ${order.status}.`, { status: order.status });
+
+      // raise socket event
+      io.to("order:" + order.Client.Table.restaurantId).emit("order-update", { id, ...body });
     });
   },
   //MM-27
@@ -68,16 +86,23 @@ module.exports = {
     if (dishId) {
       conditions.dishId = dishId;
       conditions.status = "pending";
-
-      const orders = db.Order.findAll({ where: { conditions } });
-      //TODO: raise socket notification after update
     }
 
-    await db.Order.update({ userId: user.userId, ...body }, { where: conditions, transaction });
+    // check orders and update
+    let [orders] = await Promise.all([
+      db.Order.findAll({ attributes: ["id"], where: conditions }),
+      db.Order.update({ userId: user.userId, ...body }, { where: conditions, transaction }),
+    ]);
+
+    // raise socket event
+    if (orders.length) {
+      const orderIds = orders.map((val) => val.id);
+      io.to("order:" + user.restaurantId).emit("order-update", { id: orderIds, ...body });
+    }
   },
   //MM-27
   getAll: async (user, query) => {
-    const conditions = _.pick(query, ["status"]);
+    const conditions = _.pick(query, ["status", "id"]);
     const dishConditions = {
       restaurantId: user.restaurantId,
       ..._.pick(query, "categoryId"),

@@ -12,9 +12,9 @@ const images = require("./images/router");
 //MM-8
 router.post("/", authorization(["admin", "manager", "author"]), MulterStorage.array("images", 4), joiValidator(validator.create), catchAsync(controller.create));
 
-router.patch("/:id", authorization(["admin", "manager", "author"]), MulterStorage.array("images", 4), joiValidator(validator.update), catchAsync(controller.update));
+router.patch("/:id/status", authorization(["chef"]), joiValidator(validator.changeStatus), catchAsync(controller.changeStatus));
 
-router.patch("/:id/status", authorization(["chef"]), joiValidator(validator.changeStatus), controller.changeStatus);
+router.patch("/:id", authorization(["admin", "manager", "author"]), MulterStorage.array("images", 4), joiValidator(validator.update), catchAsync(controller.update));
 
 router.delete("/:id", authorization(["admin", "manager", "author"]), joiValidator(validator.paramId), catchAsync(controller.delete));
 

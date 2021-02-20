@@ -37,7 +37,6 @@ module.exports = (sequelize) => {
             include: [{ attributes: [], model: db.Menu, where: { restaurantId: user.restaurantId } }],
           },
         ],
-        transaction,
       });
       if (!dish) throw new Exception(statusCodes.ITEM_NOT_FOUND, "Not Found");
       return dish;

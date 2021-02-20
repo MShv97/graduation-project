@@ -1,10 +1,9 @@
-require("dotenv").config();
+process.env.NODE_ENV !== "production" && require("dotenv").config();
 const express = require("express");
 const helmet = require("helmet");
 const cors = require("cors");
 const db = require("./database");
-const { httpLogger } = require("./middlewares");
-const Exception = require("./middlewares/exception");
+const { httpLogger, Exception } = require("./middlewares");
 
 const start = async () => {
   logger.info("Connecting to DB");
@@ -14,6 +13,9 @@ const start = async () => {
   const router = require("./app/router");
 
   const app = express();
+  const httpServer = require("http").createServer(app);
+  // initialize socket
+  require("./socket")(httpServer);
 
   /***************
    * @Middleware *
@@ -33,11 +35,12 @@ const start = async () => {
   app.use(router);
   // Request Error Handler
   app.use(Exception.handler);
+
   /***********
    * @Server *
    ***********/
   // Server Connection
-  app.listen(process.env.PORT, () => {
+  httpServer.listen(process.env.PORT, () => {
     logger.info(`server is running on port ${process.env.PORT} ... `);
   });
 };

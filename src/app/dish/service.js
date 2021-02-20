@@ -56,10 +56,10 @@ module.exports = {
       }
     });
   },
-  //MM-
+  //MM-30
   changeStatus: async (user, id, body) => {
     await sequelize.transaction(async (transaction) => {
-      const [dish, ss] = await Promise.all([
+      const [dish] = await Promise.all([
         db.Dish.checkPermission(user, id),
         db.Dish.update(body, { where: { id }, transaction }),
       ]);

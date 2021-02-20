@@ -8,8 +8,8 @@
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
     "sync": "node src/database/sync.js alter",
-    "force": "node src/database/sync.js force alter",
-    "seed": "npx sequelize-cli db:seed:all"
+    "force": "sequelize db:drop && sequelize db:create && node src/database/sync.js",
+    "seed": "sequelize db:seed:all"
   },
   "repository": {
     "type": "git",
@@ -37,6 +37,7 @@
     "nodemailer": "^6.4.17",
     "sequelize": "^6.3.5",
     "sequelize-cli": "^6.2.0",
+    "socket.io": "^3.1.1",
     "winston": "^3.3.3"
   },
   "devDependencies": {

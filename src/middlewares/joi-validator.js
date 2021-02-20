@@ -4,7 +4,10 @@ module.exports = (schema) => {
   return (req, res, next) => {
     const validationResult = schema.unknown(true).validate(req);
 
-    if (validationResult.error) throw new Exception(statusCodes.VALIDATION_ERROR, validationResult.error.message);
+    if (validationResult.error) {
+      const message = validationResult.error.message.split('"').join("");
+      throw new Exception(statusCodes.VALIDATION_ERROR, message);
+    }
     next();
   };
 };

@@ -1,5 +1,4 @@
 const logger = require("./logger");
-const CustomError = require("./custom-error");
 const ResponseSender = require("./response-sender");
 const DeletePublicError = require("./delete-public-file");
 const statusCodes = require("./status-codes");
@@ -10,7 +9,6 @@ const _ = require("lodash");
 global._ = _;
 
 module.exports = {
-  CustomError,
   ResponseSender,
   logger,
   DeletePublicError,

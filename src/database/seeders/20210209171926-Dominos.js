@@ -8,7 +8,7 @@ module.exports = {
       {
         id: 1,
         name: "Dominos",
-        arName: "دومينوز",
+        ar_name: "دومينوز",
         address: "Hama-AlBaath",
         created_at: new Date(),
         updated_at: new Date(),

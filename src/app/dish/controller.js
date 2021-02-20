@@ -19,6 +19,7 @@ module.exports = {
 
   //MM-
   changeStatus: async (req, res) => {
+    console.log("here");
     const { id } = req.params;
     const { user, body } = req;
     const result = await service.changeStatus(user, id, body);
