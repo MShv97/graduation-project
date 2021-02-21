@@ -193,20 +193,15 @@ module.exports = {
       ],
       include: [
         {
-          model: db.Client,
+          required: true,
           attributes: ["id"],
-          include: [
-            {
-              attributes: ["id"],
-              model: db.Table,
-              where: { restaurantId: user.restaurantId },
-            },
-          ],
+          where: { restaurantId: user.restaurantId },
+          model: db.Dish,
         },
       ],
     });
     result = result.get({ plain: true });
-    delete result.Client;
+    delete result.Dish;
     return result;
   },
 };
