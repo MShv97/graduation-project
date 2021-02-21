@@ -51,4 +51,10 @@ module.exports = {
       ),
     }),
   }),
+  getStatusCount: Joi.object({
+    query: Joi.object({
+      from: Joi.date(),
+      to: Joi.date(),
+    }),
+  }),
 };

@@ -15,6 +15,8 @@ router.patch("/:id", joiValidator(validator.update), catchAsync(controller.updat
 
 router.get("/", authorization(["any"]), joiValidator(validator.getAll), catchAsync(controller.getAll));
 
+router.get("/status-count", authorization(["any"]), joiValidator(validator.getStatusCount), catchAsync(controller.getStatusCount));
+
 router.get("/:id", authorization(["any"]), joiValidator(validator.paramId), catchAsync(controller.getById));
 
 module.exports = router;

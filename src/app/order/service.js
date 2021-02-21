@@ -72,8 +72,7 @@ module.exports = {
         db.Order.update(body, { where: { id }, transaction }),
       ]);
       if (!order) throw new Exception(statusCodes.ITEM_NOT_FOUND);
-      if (order.status !== "pending")
-        throw new Exception(statusCodes.INVALID_OPERATION, `Order status is ${order.status}.`, { status: order.status });
+      if (order.status !== "pending") throw new Exception(statusCodes.INVALID_OPERATION, `Order status is ${order.status}.`, { status: order.status });
 
       // raise socket event
       io.to("order:" + order.Client.Table.restaurantId).emit("order-update", { id, ...body });
@@ -89,10 +88,7 @@ module.exports = {
     }
 
     // check orders and update
-    let [orders] = await Promise.all([
-      db.Order.findAll({ attributes: ["id"], where: conditions }),
-      db.Order.update({ userId: user.userId, ...body }, { where: conditions, transaction }),
-    ]);
+    let [orders] = await Promise.all([db.Order.findAll({ attributes: ["id"], where: conditions }), db.Order.update({ userId: user.userId, ...body }, { where: conditions, transaction })]);
 
     // raise socket event
     if (orders.length) {
@@ -176,6 +172,41 @@ module.exports = {
     result.dish = result.Dish;
     delete result.Dish && delete result.Client;
 
+    return result;
+  },
+  // MM-31
+  getStatusCount: async (user, query) => {
+    const criteria = {};
+    if (query.from && query.to) criteria.createdAt = { [Op.between]: [query.from, query.to] };
+    if (query.from) criteria.createdAt = { [Op.gte]: query.from };
+    if (query.to) criteria.createdAt = { [Op.lte]: query.to };
+    let result = await db.Order.findOne({
+      where: criteria,
+      attributes: [
+        [sequelize.fn("Count", sequelize.col("Order.id")), "total"],
+        [sequelize.literal("COUNT (CASE Order.status when 'pending' THEN 1 ELSE NULL END)"), "pending"],
+        [sequelize.literal("COUNT (CASE Order.status when 'canceled' THEN 1 ELSE NULL END)"), "canceled"],
+        [sequelize.literal("COUNT (CASE Order.status when 'ready' THEN 1 ELSE NULL END)"), "ready"],
+        [sequelize.literal("COUNT (CASE Order.status when 'done' THEN 1 ELSE NULL END)"), "done"],
+        [sequelize.literal("COUNT (CASE Order.status when 'cooking' THEN 1 ELSE NULL END)"), "cooking"],
+        [sequelize.literal("COUNT (CASE Order.status when 'out of stock' THEN 1 ELSE NULL END)"), "out of stock"],
+      ],
+      include: [
+        {
+          model: db.Client,
+          attributes: ["id"],
+          include: [
+            {
+              attributes: ["id"],
+              model: db.Table,
+              where: { restaurantId: user.restaurantId },
+            },
+          ],
+        },
+      ],
+    });
+    result = result.get({ plain: true });
+    delete result.Client;
     return result;
   },
 };

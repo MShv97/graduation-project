@@ -38,4 +38,9 @@ module.exports = {
     const result = await service.getAll(user, query);
     res.status(statusCodes.OK).send(result);
   },
+  getStatusCount: async (req, res) => {
+    const { user, query } = req;
+    const result = await service.getStatusCount(user, query);
+    res.status(statusCodes.OK).send(result);
+  },
 };
