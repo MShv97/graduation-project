@@ -15,6 +15,7 @@ module.exports = {
   },
   // MM-29
   getById: async (id) => {
-    return await db.CategoryIcon.findByPk(id);
+    const result = await db.CategoryIcon.findByPk(id);
+    return { data: result };
   },
 };

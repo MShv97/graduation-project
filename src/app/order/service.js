@@ -1,6 +1,6 @@
 const sequelize = require("../../database");
 const { statusCodes } = require("../../helpers");
-const { Op } = require("sequelize");
+const { Op, literal, fn } = require("sequelize");
 
 const db = sequelize.models;
 
@@ -39,7 +39,8 @@ module.exports = {
       ]);
 
       dishes.forEach((val) => dishIds.delete(val.id));
-      if (dishIds.size) throw new Exception(statusCodes.ITEM_NOT_FOUND, `Dishes [${[...dishIds]}] Not Found`, [...dishIds]);
+      if (dishIds.size)
+        throw new Exception(statusCodes.ITEM_NOT_FOUND, `Dishes [${[...dishIds]}] Not Found`, [...dishIds]);
 
       // prepare orders
       let orders = dishes.map((val) => ({
@@ -67,12 +68,17 @@ module.exports = {
       const [order] = await Promise.all([
         db.Order.findByPk(id, {
           attributes: ["id", "amount", "note", "status"],
-          include: [{ attributes: ["id"], model: db.Client, include: [{ attributes: ["restaurantId"], model: db.Table }] }],
+          include: [
+            { attributes: ["id"], model: db.Client, include: [{ attributes: ["restaurantId"], model: db.Table }] },
+          ],
         }),
         db.Order.update(body, { where: { id }, transaction }),
       ]);
       if (!order) throw new Exception(statusCodes.ITEM_NOT_FOUND);
-      if (order.status !== "pending") throw new Exception(statusCodes.INVALID_OPERATION, `Order status is ${order.status}.`, { status: order.status });
+      if (order.status !== "pending")
+        throw new Exception(statusCodes.INVALID_OPERATION, `Order status is ${order.status}.`, {
+          status: order.status,
+        });
 
       // raise socket event
       io.to("order:" + order.Client.Table.restaurantId).emit("order-update", { id, ...body });
@@ -88,7 +94,10 @@ module.exports = {
     }
 
     // check orders and update
-    let [orders] = await Promise.all([db.Order.findAll({ attributes: ["id"], where: conditions }), db.Order.update({ userId: user.userId, ...body }, { where: conditions, transaction })]);
+    let [orders] = await Promise.all([
+      db.Order.findAll({ attributes: ["id"], where: conditions }),
+      db.Order.update({ userId: user.userId, ...body }, { where: conditions, transaction }),
+    ]);
 
     // raise socket event
     if (orders.length) {
@@ -106,7 +115,7 @@ module.exports = {
 
     let { count, rows } = await db.Order.findAndCountAll({
       where: conditions,
-      attributes: ["id", "amount", "note", "status", "createdAt"],
+      attributes: { exclude: ["price", "clientId", "dishId", "userId"] },
       include: [
         {
           attributes: ["id"],
@@ -115,9 +124,10 @@ module.exports = {
         },
         {
           required: true,
-          attributes: ["id", "name", "arName", "categoryId"],
+          attributes: ["id", "name", "arName", "status", "categoryId"],
           where: dishConditions,
           model: db.Dish,
+          as: "dish",
         },
       ],
       offset: Number(query.offset),
@@ -129,9 +139,8 @@ module.exports = {
     rows = rows.map((val) => {
       val = val.get({ plain: true });
       val.table = val.Client.Table.number;
-      val.dish = val.Dish;
 
-      delete val.Dish && delete val.Client;
+      delete val.Client;
 
       return val;
     });
@@ -142,7 +151,7 @@ module.exports = {
   getById: async (user, id) => {
     let result = await db.Order.findOne({
       where: { id },
-      attributes: { exclude: ["dishId", "clientId", "userId"] },
+      attributes: { exclude: ["price", "clientId", "dishId", "userId"] },
       include: [
         {
           attributes: ["id"],
@@ -150,12 +159,13 @@ module.exports = {
           include: [{ attributes: ["number"], model: db.Table }],
         },
         {
-          attributes: ["id", "name", "arName"],
+          attributes: ["id", "name", "arName", "status"],
           where: { restaurantId: user.restaurantId },
           model: db.Dish,
+          as: "dish",
           include: [
             {
-              attributes: { exclude: ["menuId"] },
+              attributes: { exclude: ["menuId", "createdAt", "updatedAt", "deletedAt"] },
               model: db.Category,
               as: "category",
               include: [{ attributes: ["url"], model: db.CategoryIcon, as: "icon" }],
@@ -167,41 +177,43 @@ module.exports = {
     if (!result) return;
 
     result = result.get({ plain: true });
-    result.Dish.category.icon = result.Dish.category.icon.url;
+    result.dish.category.icon = result.dish.category.icon.url;
     result.table = result.Client.Table.number;
-    result.dish = result.Dish;
-    delete result.Dish && delete result.Client;
 
-    return result;
+    delete result.Client;
+
+    return { data: result };
   },
   // MM-31
   getStatusCount: async (user, query) => {
-    const criteria = {};
-    if (query.from && query.to) criteria.createdAt = { [Op.between]: [query.from, query.to] };
-    if (query.from) criteria.createdAt = { [Op.gte]: query.from };
-    if (query.to) criteria.createdAt = { [Op.lte]: query.to };
-    let result = await db.Order.findOne({
-      where: criteria,
-      attributes: [
-        [sequelize.fn("Count", sequelize.col("Order.id")), "total"],
-        [sequelize.literal("COUNT (CASE Order.status when 'pending' THEN 1 ELSE NULL END)"), "pending"],
-        [sequelize.literal("COUNT (CASE Order.status when 'canceled' THEN 1 ELSE NULL END)"), "canceled"],
-        [sequelize.literal("COUNT (CASE Order.status when 'ready' THEN 1 ELSE NULL END)"), "ready"],
-        [sequelize.literal("COUNT (CASE Order.status when 'done' THEN 1 ELSE NULL END)"), "done"],
-        [sequelize.literal("COUNT (CASE Order.status when 'cooking' THEN 1 ELSE NULL END)"), "cooking"],
-        [sequelize.literal("COUNT (CASE Order.status when 'out of stock' THEN 1 ELSE NULL END)"), "out of stock"],
-      ],
+    const conditions = {};
+    if (query.from) conditions.createdAt = { [Op.gte]: query.from };
+    if (query.to) conditions.createdAt = { [Op.lte]: query.to };
+    if (query.from && query.to) conditions.createdAt = { [Op.between]: [query.from, query.to] };
+
+    const counts = await db.Order.findAll({
+      where: conditions,
+      attributes: ["status", [fn("Count", sequelize.col("Order.id")), "count"]],
+      raw: true,
       include: [
         {
           required: true,
           attributes: ["id"],
           where: { restaurantId: user.restaurantId },
           model: db.Dish,
+          as: "dish",
         },
       ],
+      group: "Order.status",
     });
-    result = result.get({ plain: true });
-    delete result.Dish;
-    return result;
+
+    const result = db.Order.STATUS.reduce((prev, curr) => {
+      prev[curr] = 0;
+      return prev;
+    }, {});
+
+    counts.forEach((val) => (result[val.status] = val.count));
+
+    return { data: result };
   },
 };

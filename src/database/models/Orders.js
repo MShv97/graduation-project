@@ -2,11 +2,11 @@ const { Model, DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
   class Order extends Model {
-    static STATUS = ["pending", "cooking", "ready", "out of stock"];
+    static STATUS = ["pending", "cooking", "ready", "done", "canceled", "out of stock"];
 
     static associate(models) {
       this.belongsTo(models.Client, { foreignKey: { name: "clientId", allowNull: false } });
-      this.belongsTo(models.Dish, { foreignKey: { name: "dishId", allowNull: false } });
+      this.belongsTo(models.Dish, { as: "dish", foreignKey: { name: "dishId", allowNull: false } });
       this.belongsTo(models.User, { foreignKey: { name: "userId" } });
     }
   }

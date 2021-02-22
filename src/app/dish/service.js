@@ -105,7 +105,7 @@ module.exports = {
     result = result.get({ plain: true });
     result.category.icon = result.category.icon.url;
 
-    return result;
+    return { data: result };
   },
   //MM-16
   getAll: async (user, query) => {

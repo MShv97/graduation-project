@@ -55,7 +55,7 @@ module.exports = {
     result = result.get({ plain: true });
     result.icon = result.icon.url;
 
-    return result;
+    return { data: result };
   },
   //MM-7
   getAll: async (user, query) => {

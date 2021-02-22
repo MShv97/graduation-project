@@ -51,7 +51,7 @@ module.exports = {
       attributes: { exclude: ["restaurantId"] },
       where: { restaurantId: user.restaurantId },
     });
-    return result;
+    return { data: result };
   },
   //MM-6
   getAll: async (user, query) => {

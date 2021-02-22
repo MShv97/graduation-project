@@ -7,7 +7,8 @@ const db = sequelize.models;
 module.exports = {
   // MM-29
   getById: async (id) => {
-    return await db.Allergy.findByPk(id);
+    const result = await db.Allergy.findByPk(id);
+    return { data: result };
   },
   // MM-29
   getAll: async ({ offset, limit, q, order }) => {

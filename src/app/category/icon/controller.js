@@ -14,6 +14,6 @@ module.exports = {
   getById: async (req, res) => {
     const { id } = req.params;
     const result = await service.getById(id);
-    result ? res.status(statusCodes.OK).send(result) : res.sendStatus(statusCodes.ITEM_NOT_FOUND);
+    result.data ? res.status(statusCodes.OK).send(result) : res.sendStatus(statusCodes.ITEM_NOT_FOUND);
   },
 };
