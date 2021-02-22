@@ -16,12 +16,13 @@ module.exports = {
     ];
 
     // password: domPassword
+    const password = await hash("domPassword", Number(process.env.BCRYPT_ROUNDS));
     const users = [
       {
         first_name: "Admin",
         last_name: "Admin",
         email: "admin@dominos.com",
-        password: await hash("domPassword", Number(process.env.BCRYPT_ROUNDS)),
+        password,
         phone: "+963962213470",
         birthdate: "1997/04/10",
         role: "admin",
@@ -33,7 +34,7 @@ module.exports = {
         first_name: "chef",
         last_name: "chef",
         email: "chef@dominos.com",
-        password: await hash("domPassword", Number(process.env.BCRYPT_ROUNDS)),
+        password,
         phone: "+963962213470",
         birthdate: "1997/04/10",
         role: "chef",
@@ -45,7 +46,7 @@ module.exports = {
         first_name: "manager",
         last_name: "manager",
         email: "manager@dominos.com",
-        password: await hash("domPassword", Number(process.env.BCRYPT_ROUNDS)),
+        password,
         phone: "+963962213470",
         birthdate: "1997/04/10",
         role: "manager",
@@ -57,7 +58,7 @@ module.exports = {
         first_name: "author",
         last_name: "author",
         email: "author@dominos.com",
-        password: await hash("domPassword", Number(process.env.BCRYPT_ROUNDS)),
+        password,
         phone: "+963962213470",
         birthdate: "1997/04/10",
         role: "author",
@@ -69,7 +70,7 @@ module.exports = {
         first_name: "accountant",
         last_name: "accountant",
         email: "accountant@dominos.com",
-        password: await hash("domPassword", Number(process.env.BCRYPT_ROUNDS)),
+        password,
         phone: "+963962213470",
         birthdate: "1997/04/10",
         role: "accountant",
@@ -81,7 +82,7 @@ module.exports = {
         first_name: "waiter",
         last_name: "waiter",
         email: "waiter@dominos.com",
-        password: await hash("domPassword", Number(process.env.BCRYPT_ROUNDS)),
+        password,
         phone: "+963962213470",
         birthdate: "1997/04/10",
         created_at: new Date(),
@@ -147,8 +148,7 @@ module.exports = {
       {
         name: "Zinger",
         ar_name: "زنجر",
-        description:
-          "Zinger sandwich has chicken layer ,egg layer and a veggie mayo layer..that makes a wholesome meal for breakfast.",
+        description: "Zinger sandwich has chicken layer ,egg layer and a veggie mayo layer..that makes a wholesome meal for breakfast.",
         ar_description: "طبقة دجاج وطبقة بيض وطبقة مايونيز",
         code: "zinger01",
         price: 3000,
@@ -197,13 +197,15 @@ module.exports = {
 
     const subscriptions = [{ status: "active", restaurant_id: 1, subscription_id: 1, payment_method_id: 1 }];
 
-    await queryInterface.bulkInsert("restaurants", restaurant);
-    await queryInterface.bulkInsert("users", users);
-    await queryInterface.bulkInsert("menus", menus);
-    await queryInterface.bulkInsert("tables", tables);
-    await queryInterface.bulkInsert("categories", categories);
-    await queryInterface.bulkInsert("dishes", dishes);
-    await queryInterface.bulkInsert("restaurants_subscriptions", subscriptions);
+    await queryInterface.sequelize.transaction(async (transaction) => {
+      await queryInterface.bulkInsert("restaurants", restaurant, { transaction });
+      await queryInterface.bulkInsert("users", users, { transaction });
+      await queryInterface.bulkInsert("menus", menus, { transaction });
+      await queryInterface.bulkInsert("tables", tables, { transaction });
+      await queryInterface.bulkInsert("categories", categories, { transaction });
+      await queryInterface.bulkInsert("dishes", dishes, { transaction });
+      await queryInterface.bulkInsert("restaurants_subscriptions", subscriptions, { transaction });
+    });
   },
 
   down: async (queryInterface, Sequelize) => {

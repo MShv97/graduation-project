@@ -1,6 +1,5 @@
 "use strict";
 
-const sequelize = require("../../database");
 const { hash } = require("bcrypt");
 
 module.exports = {
@@ -17,12 +16,13 @@ module.exports = {
     ];
 
     // password: AloPassword
+    const password = await hash("AloPassword", Number(process.env.BCRYPT_ROUNDS));
     const users = [
       {
         first_name: "Admin",
         last_name: "Admin",
         email: "admin@Alo.com",
-        password: await hash("AloPassword", Number(process.env.BCRYPT_ROUNDS)),
+        password,
         phone: "+963938061161",
         birthdate: "1997/04/10",
         role: "admin",
@@ -34,7 +34,7 @@ module.exports = {
         first_name: "chef",
         last_name: "chef",
         email: "chef@Alo.com",
-        password: await hash("AloPassword", Number(process.env.BCRYPT_ROUNDS)),
+        password,
         phone: "+963962213470",
         birthdate: "1997/04/10",
         role: "chef",
@@ -46,7 +46,7 @@ module.exports = {
         first_name: "manager",
         last_name: "manager",
         email: "manager@Alo.com",
-        password: await hash("AloPassword", Number(process.env.BCRYPT_ROUNDS)),
+        password,
         phone: "+963962213470",
         birthdate: "1997/04/10",
         role: "manager",
@@ -58,7 +58,7 @@ module.exports = {
         first_name: "author",
         last_name: "author",
         email: "author@Alo.com",
-        password: await hash("AloPassword", Number(process.env.BCRYPT_ROUNDS)),
+        password,
         phone: "+963962213470",
         birthdate: "1997/04/10",
         role: "author",
@@ -70,7 +70,7 @@ module.exports = {
         first_name: "accountant",
         last_name: "accountant",
         email: "accountant@Alo.com",
-        password: await hash("AloPassword", Number(process.env.BCRYPT_ROUNDS)),
+        password,
         phone: "+963962213470",
         birthdate: "1997/04/10",
         role: "accountant",
@@ -82,7 +82,7 @@ module.exports = {
         first_name: "waiter",
         last_name: "waiter",
         email: "waiter@Alo.com",
-        password: await hash("AloPassword", Number(process.env.BCRYPT_ROUNDS)),
+        password,
         phone: "+963962213470",
         birthdate: "1997/04/10",
         created_at: new Date(),
@@ -105,7 +105,7 @@ module.exports = {
     ];
 
     const tables = [];
-    for (let i = 0; i < 10; i++) tables.push({ code: require("uuid").v4(), number: i + 1, restaurant_id: 2, menu_id: 1 });
+    for (let i = 0; i < 10; i++) tables.push({ code: require("uuid").v4(), number: i + 1, restaurant_id: 2, menu_id: 2 });
 
     const categories = [
       {
@@ -141,7 +141,7 @@ module.exports = {
         preparation_time: 15,
         calories: 250,
         restaurant_id: 2,
-        category_id: 1,
+        category_id: 3,
         created_at: new Date(),
         updated_at: new Date(),
       },
@@ -157,7 +157,7 @@ module.exports = {
         preparation_time: 15,
         calories: 200,
         restaurant_id: 2,
-        category_id: 1,
+        category_id: 3,
         created_at: new Date(),
         updated_at: new Date(),
       },
@@ -173,7 +173,7 @@ module.exports = {
         preparation_time: 30,
         calories: 300,
         restaurant_id: 2,
-        category_id: 2,
+        category_id: 3,
         created_at: new Date(),
         updated_at: new Date(),
       },
@@ -189,7 +189,7 @@ module.exports = {
         preparation_time: 10,
         calories: 100,
         restaurant_id: 2,
-        category_id: 2,
+        category_id: 4,
         created_at: new Date(),
         updated_at: new Date(),
       },
@@ -197,19 +197,15 @@ module.exports = {
 
     const subscriptions = [{ status: "active", restaurant_id: 2, subscription_id: 1, payment_method_id: 1 }];
 
-    try {
-      await sequelize.transaction(async (transaction) => {
-        await queryInterface.bulkInsert("restaurants", restaurant, { transaction });
-        await queryInterface.bulkInsert("users", users, { transaction });
-        await queryInterface.bulkInsert("menus", menus, { transaction });
-        await queryInterface.bulkInsert("tables", tables, { transaction });
-        await queryInterface.bulkInsert("categories", categories, { transaction });
-        await queryInterface.bulkInsert("dishes", dishes, { transaction });
-        await queryInterface.bulkInsert("restaurants_subscriptions", subscriptions, { transaction });
-      });
-    } catch (err) {
-      console.log(err);
-    }
+    await queryInterface.sequelize.transaction(async (transaction) => {
+      await queryInterface.bulkInsert("restaurants", restaurant, { transaction });
+      await queryInterface.bulkInsert("users", users, { transaction });
+      await queryInterface.bulkInsert("menus", menus, { transaction });
+      await queryInterface.bulkInsert("tables", tables, { transaction });
+      await queryInterface.bulkInsert("categories", categories, { transaction });
+      await queryInterface.bulkInsert("dishes", dishes, { transaction });
+      await queryInterface.bulkInsert("restaurants_subscriptions", subscriptions, { transaction });
+    });
   },
 
   down: async (queryInterface, Sequelize) => {
