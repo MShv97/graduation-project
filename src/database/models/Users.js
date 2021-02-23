@@ -2,8 +2,8 @@ const { Model, DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
   class User extends Model {
-    static ROLE = ["admin", "manager", "author", "chef", "accountant", "waiter"];
-    static STATUS = ["unverified", "verified", "fired"];
+    static ROLES = ["admin", "manager", "author", "chef", "accountant", "waiter"];
+    static STATUS = ["pending", "hired", "fired", "resigned"];
 
     static associate(models) {
       this.belongsTo(models.Restaurant, {
@@ -13,6 +13,7 @@ module.exports = (sequelize) => {
       });
 
       this.hasMany(models.Order, { foreignKey: { name: "userId" } });
+      this.hasMany(models.ForgetPassword, { foreignKey: { name: "userId", allowNull: false } });
     }
   }
 
@@ -25,9 +26,11 @@ module.exports = (sequelize) => {
       phone: { type: DataTypes.STRING(20), allowNull: false },
       birthdate: { type: DataTypes.DATE, allowNull: false },
       avatar: { type: DataTypes.TEXT },
-      role: { type: DataTypes.ENUM(User.ROLE), allowNull: false },
+      role: { type: DataTypes.ENUM(User.ROLES), allowNull: false },
       address: { type: DataTypes.TEXT },
-      status: { type: DataTypes.ENUM(User.STATUS), defaultValue: "unverified" },
+      status: { type: DataTypes.ENUM(User.STATUS), defaultValue: "pending" },
+      verified: { type: DataTypes.BOOLEAN, defaultValue: false },
+      verifyCode: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4 },
     },
     {
       sequelize,

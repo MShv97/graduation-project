@@ -17,16 +17,4 @@ module.exports = {
       await mailSender(to, subject, text, html);
     });
   },
-  //MM-19
-  signup: async (body) => {
-    const invite = await db.Invite.findOne({ where: { token: body.token } });
-    if (!invite) throw new Exception(statusCodes.ITEM_NOT_FOUND, "Invite token was not found.");
-    body.password = await hash(body.password, Number(process.env.BCRYPT_ROUNDS));
-    await sequelize.transaction(async (transaction) => {
-      await Promise.all([
-        db.User.create({ ...body, restaurantId: invite.restaurantId, role: invite.role }, { transaction }),
-        db.Invite.destroy({ where: { id: invite.id }, transaction }),
-      ]);
-    });
-  },
 };

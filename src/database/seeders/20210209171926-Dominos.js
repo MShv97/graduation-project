@@ -1,6 +1,7 @@
 "use strict";
 
 const { hash } = require("bcrypt");
+const uuid = require("uuid").v4;
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -26,6 +27,7 @@ module.exports = {
         phone: "+963962213470",
         birthdate: "1997/04/10",
         role: "admin",
+        verify_code: uuid(),
         created_at: new Date(),
         updated_at: new Date(),
         restaurant_id: 1,
@@ -38,6 +40,7 @@ module.exports = {
         phone: "+963962213470",
         birthdate: "1997/04/10",
         role: "chef",
+        verify_code: uuid(),
         created_at: new Date(),
         updated_at: new Date(),
         restaurant_id: 1,
@@ -50,6 +53,7 @@ module.exports = {
         phone: "+963962213470",
         birthdate: "1997/04/10",
         role: "manager",
+        verify_code: uuid(),
         created_at: new Date(),
         updated_at: new Date(),
         restaurant_id: 1,
@@ -62,6 +66,7 @@ module.exports = {
         phone: "+963962213470",
         birthdate: "1997/04/10",
         role: "author",
+        verify_code: uuid(),
         created_at: new Date(),
         updated_at: new Date(),
         restaurant_id: 1,
@@ -74,6 +79,7 @@ module.exports = {
         phone: "+963962213470",
         birthdate: "1997/04/10",
         role: "accountant",
+        verify_code: uuid(),
         created_at: new Date(),
         updated_at: new Date(),
         restaurant_id: 1,
@@ -85,6 +91,7 @@ module.exports = {
         password,
         phone: "+963962213470",
         birthdate: "1997/04/10",
+        verify_code: uuid(),
         created_at: new Date(),
         updated_at: new Date(),
         role: "waiter",
@@ -105,7 +112,8 @@ module.exports = {
     ];
 
     const tables = [];
-    for (let i = 0; i < 10; i++) tables.push({ code: require("uuid").v4(), number: i + 1, restaurant_id: 1, menu_id: 1 });
+    for (let i = 0; i < 10; i++)
+      tables.push({ code: require("uuid").v4(), number: i + 1, restaurant_id: 1, menu_id: 1 });
 
     const categories = [
       {
@@ -132,7 +140,8 @@ module.exports = {
       {
         name: "Santa Fe",
         ar_name: "سانتافيه",
-        description: "These Santa Fe Sandwiches are a quick and easy way to make your next lunch hour something special.",
+        description:
+          "These Santa Fe Sandwiches are a quick and easy way to make your next lunch hour something special.",
         ar_description: "سريعة التحضير",
         code: "santaFe01",
         price: 3000,
@@ -148,7 +157,8 @@ module.exports = {
       {
         name: "Zinger",
         ar_name: "زنجر",
-        description: "Zinger sandwich has chicken layer ,egg layer and a veggie mayo layer..that makes a wholesome meal for breakfast.",
+        description:
+          "Zinger sandwich has chicken layer ,egg layer and a veggie mayo layer..that makes a wholesome meal for breakfast.",
         ar_description: "طبقة دجاج وطبقة بيض وطبقة مايونيز",
         code: "zinger01",
         price: 3000,

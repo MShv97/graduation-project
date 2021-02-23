@@ -7,9 +7,18 @@ const router = require("express").Router();
  * @Router /api/user  *
  **********************/
 
-//MM-18
 router.post("/invite", authorization(["admin", "manager"]), joiValidator(validator.invite), catchAsync(controller.invite));
-//MM-19
-router.post("/signup", joiValidator(validator.signup), catchAsync(controller.signup));
+
+router.get("/", authorization(["admin", "manager"]), joiValidator(validator.getAll), catchAsync(controller.getAll));
+
+router.get("/:id", authorization(["admin", "manager"]), joiValidator(validator.getById), catchAsync(controller.getById));
+
+router.patch("/:id", authorization(["admin", "manager"]), joiValidator(validator.update), catchAsync(controller.update));
+
+router.get("/profile", authorization(["any"]), joiValidator(validator.getProfile), catchAsync(controller.getProfile));
+
+router.patch("/profile", authorization(["any"]), joiValidator(validator.updateProfile), catchAsync(controller.updateProfile));
+
+router.patch("/resend-verification", authorization(["any"]), joiValidator(validator.resendVerification), catchAsync(controller.resendVerification));
 
 module.exports = router;

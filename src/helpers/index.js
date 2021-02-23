@@ -6,6 +6,7 @@ const JWTGenerator = require("./jwt-generator");
 const commonValidators = require("./common/validator");
 const mailSender = require("./mail-sender");
 const _ = require("lodash");
+const moment = require("moment");
 global._ = _;
 
 module.exports = {
@@ -16,4 +17,5 @@ module.exports = {
   JWTGenerator,
   commonValidators,
   mailSender,
+  moment,
 };

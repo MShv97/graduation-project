@@ -1,6 +1,7 @@
 "use strict";
 
 const { hash } = require("bcrypt");
+const uuid = require("uuid").v4;
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -26,6 +27,7 @@ module.exports = {
         phone: "+963938061161",
         birthdate: "1997/04/10",
         role: "admin",
+        verify_code: uuid(),
         created_at: new Date(),
         updated_at: new Date(),
         restaurant_id: 2,
@@ -38,6 +40,7 @@ module.exports = {
         phone: "+963962213470",
         birthdate: "1997/04/10",
         role: "chef",
+        verify_code: uuid(),
         created_at: new Date(),
         updated_at: new Date(),
         restaurant_id: 2,
@@ -50,6 +53,7 @@ module.exports = {
         phone: "+963962213470",
         birthdate: "1997/04/10",
         role: "manager",
+        verify_code: uuid(),
         created_at: new Date(),
         updated_at: new Date(),
         restaurant_id: 2,
@@ -62,6 +66,7 @@ module.exports = {
         phone: "+963962213470",
         birthdate: "1997/04/10",
         role: "author",
+        verify_code: uuid(),
         created_at: new Date(),
         updated_at: new Date(),
         restaurant_id: 2,
@@ -74,6 +79,7 @@ module.exports = {
         phone: "+963962213470",
         birthdate: "1997/04/10",
         role: "accountant",
+        verify_code: uuid(),
         created_at: new Date(),
         updated_at: new Date(),
         restaurant_id: 2,
@@ -85,6 +91,7 @@ module.exports = {
         password,
         phone: "+963962213470",
         birthdate: "1997/04/10",
+        verify_code: uuid(),
         created_at: new Date(),
         updated_at: new Date(),
         role: "waiter",
@@ -105,7 +112,8 @@ module.exports = {
     ];
 
     const tables = [];
-    for (let i = 0; i < 10; i++) tables.push({ code: require("uuid").v4(), number: i + 1, restaurant_id: 2, menu_id: 2 });
+    for (let i = 0; i < 10; i++)
+      tables.push({ code: require("uuid").v4(), number: i + 1, restaurant_id: 2, menu_id: 2 });
 
     const categories = [
       {
@@ -132,7 +140,8 @@ module.exports = {
       {
         name: "francisco",
         ar_name: "فرانسيسكو",
-        description: "Grilled chicken pieces with mushrooms, corn and cheese, with lettuce, potatoes and special sauce.",
+        description:
+          "Grilled chicken pieces with mushrooms, corn and cheese, with lettuce, potatoes and special sauce.",
         ar_description: "قطع دجاج مشوية مع فطر وذرة وجبنة مع الخس والبطاطا والصوص الخاص",
         code: "Alo01",
         price: 3000,

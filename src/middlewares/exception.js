@@ -31,6 +31,10 @@ class Exception {
       message = "Not found.";
     }
 
+    if (err.errCode == statusCodes.INVALID_EMAIL_OR_PASSWORD) {
+      message = "Invalid email or password.";
+    }
+
     if (errCode == 500) logger.error(err);
     res.status(errCode).send({ code: errCode, message, error });
   }
