@@ -20,4 +20,6 @@ router.use("/api/allergy", require("./allergy/router"));
 
 router.use("/api/icon", require("./category/icon/router"));
 
+router.use("/api/subscription", require("./subscription/router"));
+
 module.exports = router;

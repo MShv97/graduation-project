@@ -10,12 +10,15 @@ module.exports = (sequelize) => {
   Subscription.init(
     {
       name: { type: DataTypes.STRING(100) },
+      duration: { type: DataTypes.INTEGER },
       price: { type: DataTypes.FLOAT },
-      tables: { type: DataTypes.INTEGER },
+      discount: { type: DataTypes.INTEGER, allowNull: true },
+      description: { type: DataTypes.TEXT },
+      arDescription: { type: DataTypes.TEXT },
     },
     {
       sequelize,
-      timestamps: false,
+      timestamps: true,
       underscored: true,
     }
   );
