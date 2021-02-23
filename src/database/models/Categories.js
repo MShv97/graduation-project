@@ -19,7 +19,6 @@ module.exports = (sequelize) => {
         attributes: ["id"],
         where: { id },
         include: [{ required: true, attributes: [], model: db.Menu, where: { restaurantId: user.restaurantId } }],
-        transaction,
       });
       if (!category) throw new Exception(statusCodes.ITEM_NOT_FOUND, "Not Found");
     }

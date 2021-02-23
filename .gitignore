@@ -118,3 +118,4 @@ dist
 package-lock.json
 .vscode
 src/public
+src/assets

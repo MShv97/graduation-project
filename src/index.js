@@ -21,7 +21,7 @@ const start = async () => {
    * @Middleware *
    ***************/
   app.use(express.static(__dirname + "/public"));
-  //app.use("*", express.static(__dirname + "/public"));
+  app.use("/assets", express.static(__dirname + "/assets"));
 
   app.use(helmet());
   app.use(cors());
