@@ -9,7 +9,7 @@ module.exports = {
   getByCode: async (code, query) => {
     let result = await db.Table.findOne({
       where: { code },
-      attributes: ["number"],
+      attributes: ["number", "code"],
       include: [
         { required: true, model: db.Restaurant, as: "restaurant" },
         {
@@ -36,8 +36,12 @@ module.exports = {
       val.icon = val.icon.url;
       return val;
     });
-    delete result.menu.categories;
-
+    const table = {
+      number: result.number,
+      code: result.code,
+    };
+    result.table = table;
+    delete result.number && delete result.code && delete result.menu.categories;
     return result;
   },
 };

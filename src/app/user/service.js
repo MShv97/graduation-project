@@ -17,4 +17,47 @@ module.exports = {
       await mailSender(to, subject, text, html);
     });
   },
+  update: async (id, user, body) => {
+    await db.User.update(body, { where: { id, restaurantId: user.userId } });
+  },
+  getAll: async (user, query) => {
+    const conditions = {
+      restaurantId: user.restaurantId,
+      [Op.or]: [{ firstName: { [Op.like]: `${query.q}%` } }, { lastName: { [Op.like]: `${query.q}%` } }],
+    };
+    if (query.role) conditions.role = query.role;
+    let { count, rows } = await db.User.findAndCountAll({
+      attributes: { exclude: ["password", "verifyCode", "updatedAt", "restaurantId"] },
+      where: conditions,
+      offset: Number(query.offset),
+      limit: Number(query.limit),
+      order: [["id", "asc"]],
+      distinct: true,
+    });
+    return { totalCount: count, data: rows };
+  },
+  getById: async (user, id) => {
+    const result = await db.User.findOne({
+      attributes: { exclude: ["id", "password", "verifyCode", "updatedAt", "restaurantId"] },
+      where: { id, restaurantId: user.restaurantId },
+    });
+    return { data: result };
+  },
+  getProfile: async (user) => {
+    const result = await db.User.findOne({
+      attributes: { exclude: ["id", "password", "verifyCode", "restaurantId"] },
+      where: { id: user.userId },
+    });
+    return { data: result };
+  },
+  updateProfile: async (user, body, file) => {
+    const query = {
+      ...body,
+    };
+    if (file) query.avatar = file.path.replace("src\\assets\\", "");
+    await db.User.update(query, { where: { id: user.userId } });
+  },
+  deleteImage: async (user) => {
+    await db.User.update({ avatar: null }, { where: { id: user.userId } });
+  },
 };
